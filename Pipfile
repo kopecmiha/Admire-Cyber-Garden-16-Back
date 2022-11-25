@@ -8,8 +8,8 @@ django = "==4.0.2"
 psycopg2 = "*"
 gunicorn = "*"
 djangorestframework = "*"
-djangorestframework-jwt = "*"
 djangorestframework-simplejwt = "*"
+djangorestframework-jwt-4 = "*"
 
 [dev-packages]
 
