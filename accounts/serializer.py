@@ -10,9 +10,17 @@ class UserSerializer(serializers.ModelSerializer):
 
     def resolver_department(self, user):
         user_department = Department.objects.filter(members__in=[user.id]).first()
-        chief = User.objects.get(pk=user_department.chief.id)
-        chief_name = (chief.last_name or "") + (chief.first_name or "")
-        return {"id": user_department.id, "title": user_department.title, "chief_id": chief.pk, "chief_name": chief_name}
+        if user_department:
+            chief = User.objects.filter(pk=user_department.chief.id)
+            if chief:
+                chief = chief.first()
+                chief_name = (chief.last_name or "") + (chief.first_name or "")
+                chief_dict = {"chief_id": chief.pk, "chief_name": chief_name}
+            else:
+                chief_dict = {}
+            return {"id": user_department.id, "title": user_department.title}.update(chief_dict)
+        return {}
+
 
     def get_jwt(self, user):
         token = ""
