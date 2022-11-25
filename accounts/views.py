@@ -52,6 +52,19 @@ class GetUserProfile(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+class UserProfile(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, id):
+        try:
+            user = User.objects.get(username=id)
+            serializer = UserSerializer(user)
+            response = serializer.data
+            return Response(response, status=status.HTTP_200_OK)
+        except ObjectDoesNotExist:
+            return Response({"message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
 class Parse(APIView):
     permission_classes = (AllowAny,)
 
