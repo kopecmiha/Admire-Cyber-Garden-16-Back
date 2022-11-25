@@ -13,6 +13,7 @@ from rest_framework_jwt.serializers import jwt_payload_handler
 
 from accounts.models import User
 from department.serializer import DepartmentSerializer
+from department.models import Department
 from main import settings
 
 
@@ -27,24 +28,11 @@ class CreateDepartment(APIView):
         return Response({"message": "Department successfully created"}, status=status.HTTP_201_CREATED)
 
 
-class GetUserProfile(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        user = request.user
-        serializer = DepartmentSerializer(user)
-        response = serializer.data
-        return Response(response, status=status.HTTP_200_OK)
-
-
-class UpdateUserProfile(APIView):
-    permission_classes = (IsAuthenticated,)
+class UpdateDepartment(APIView):
+    permission_classes = (IsAdminUser,)
 
     def put(self, request):
-        avatar = request.data.get("Avatar")
         serializer_data = request.data
-        if avatar:
-            serializer_data.update({"avatar": avatar})
         serializer = DepartmentSerializer(
             request.user, data=serializer_data, partial=True
         )
@@ -52,4 +40,27 @@ class UpdateUserProfile(APIView):
         serializer.save()
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
+
+
+class DeleteDepartment(APIView):
+    permission_classes = (IsAdminUser,)
+
+    def delete(self, request):
+        department_id = request.data.get("id")
+        department_filter = Department.objects.filter(pk=department_id)
+        department_filter.delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+
+class GetDepartments(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        departments = Department.objects.all()
+        serializer = DepartmentSerializer(instance=departments, many=True)
+        response = serializer.data
+        return Response(response, status=status.HTTP_200_OK)
+
+
 
