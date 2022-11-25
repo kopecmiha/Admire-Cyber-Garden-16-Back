@@ -7,6 +7,10 @@ from department.models import Department
 class UserSerializer(serializers.ModelSerializer):
     token = serializers.SerializerMethodField('get_jwt')
     department = serializers.SerializerMethodField("resolver_department")
+    uuid = serializers.SerializerMethodField("username_as_uuid")
+
+    def username_as_uuid(self, user):
+        return user.username
 
     def resolver_department(self, user):
         user_department = Department.objects.filter(members__in=[user.id]).first()
@@ -30,8 +34,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = "first_name", "last_name", "patronymic", "email", "uuid", "token", "avatar", "grade", "specialization", "date_birthday", "department"
-        extra_kwargs = {'uuid': {'read_only': True}, "token": {'read_only': True}, "department": {'read_only': True}}
+        fields = "id", "first_name", "last_name", "patronymic", "email", "token", "avatar", "grade", "specialization", "date_birthday", "department", "uuid"
+        extra_kwargs = {"uuid": {'read_only': True}, "token": {'read_only': True}, "department": {'read_only': True}}
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
