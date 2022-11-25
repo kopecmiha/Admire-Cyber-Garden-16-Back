@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from department.serializer import DepartmentSerializer, DepartmentViewSerializer
 from department.models import Department
 from django.contrib.auth import get_user_model
-
+from django.core.exceptions import ObjectDoesNotExist
 User = get_user_model()
 
 
@@ -56,5 +56,17 @@ class GetDepartments(APIView):
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
 
+
+class GetDepartment(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, department_id):
+        try:
+            department = Department.objects.get(pk=department_id)
+            serializer = DepartmentViewSerializer(instance=department)
+            response = serializer.data
+        except ObjectDoesNotExist:
+            return Response({"message": "Department not found"}, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
 
 
