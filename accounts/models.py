@@ -4,6 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     class GradeEnum(models.TextChoices):
         SENIOR = "SENIOR"
@@ -28,7 +29,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=GradeEnum.JUNIOR,
     )
     specialization = models.CharField(_("Specialization"), max_length=256, null=True, blank=True)
-
+    date_birthday = models.DateField(null=True, blank=True)
+    fact1 = models.TextField(null=True, blank=True)
+    fact2 = models.TextField(null=True, blank=True)
+    fact3 = models.TextField(null=True, blank=True)
     objects = UserManager()
 
     USERNAME_FIELD = "username"
