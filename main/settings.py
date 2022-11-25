@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts'
+    'rest_framework',
+    'accounts',
+    "department"
 ]
 
 MIDDLEWARE = [
@@ -80,8 +82,8 @@ WSGI_APPLICATION = 'main.wsgi.application'
 DATABASE_NAME = getenv("DATABASE_NAME", "hack16")
 DATABASE_HOST = getenv("DATABASE_HOST", "localhost")
 DATABASE_PORT = getenv("DATABASE_PORT", 5432)
-DATABASE_USER = getenv("DATABASE_USER", "postgres")
-DATABASE_PASSWORD = getenv("DATABASE_PASSWORD", "postgres")
+DATABASE_USER = getenv("DATABASE_USER", "postgre")
+DATABASE_PASSWORD = getenv("DATABASE_PASSWORD", "postgre")
 
 DATABASES = {
         "default": {
