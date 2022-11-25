@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from department.serializer import DepartmentSerializer, DepartmentViewSerializer
 from department.models import Department
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class CreateDepartment(APIView):
@@ -17,16 +20,21 @@ class CreateDepartment(APIView):
         return Response({"message": "Department successfully created"}, status=status.HTTP_201_CREATED)
 
 
-class UpdateDepartment(APIView):
+class AddToDepartment(APIView):
     permission_classes = (IsAdminUser,)
 
-    def put(self, request):
-        serializer_data = request.data
-        serializer = DepartmentSerializer(data=serializer_data, partial=1)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        response = serializer.data
-        return Response(response, status=status.HTTP_200_OK)
+    def post(self, request):
+        user_id = request.data.get("user_id")
+        department_id = request.data.get("department_id")
+        try:
+            user_to_add = User.objects.get(pk=user_id)
+            department_to_update = Department.objects.get(pk=department_id)
+            department_to_update.members.add(user_to_add)
+            department_to_update.save()
+        except Exception as e:
+            print(e)
+            return Response({"message": "Department or user not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_200_OK)
 
 
 class DeleteDepartment(APIView):
