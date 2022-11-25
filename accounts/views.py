@@ -88,8 +88,8 @@ class GetListOfUsers(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        user = request.user
-        serializer = UserSerializer(user)
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
 
