@@ -1,4 +1,5 @@
 import re
+import uuid
 
 import jwt
 from django.contrib.auth import user_logged_in
@@ -12,7 +13,8 @@ from rest_framework.views import APIView
 from rest_framework_jwt.serializers import jwt_payload_handler
 
 from accounts.models import User
-from accounts.serializer import UserSerializer, UserCreateSerializer
+from accounts.serializer import UserSerializer, UserCreateSerializer, UserAuthSerializer
+from accounts.utils import get_jwt_token
 from main import settings
 
 
@@ -21,10 +23,17 @@ class CreateUser(APIView):
 
     def post(self, request):
         request = request.data
+        request["username"] = uuid.uuid4()
         serializer = UserCreateSerializer(data=request)
         serializer.is_valid(raise_exception=True)
         serializer.save(password=make_password(request['password']))
-        return Response({"message": "User succesfully created"}, status=status.HTTP_201_CREATED)
+        #user = User.objects.get(email=serializer.data["email"])
+        #token = get_jwt_token(user)
+        #user_data = {"token": token, user: user}
+        #response = UserAuthSerializer
+        #user_logged_in.send(sender=user.__class__,
+        #                    request=request, user=user)
+        return Response("aaaa", status=status.HTTP_201_CREATED)
 
 
 class GetUserProfile(APIView):
@@ -71,8 +80,7 @@ class ObtainToken(APIView):
                                 status=status.HTTP_401_UNAUTHORIZED)
             if user:
                 try:
-                    payload = jwt_payload_handler(user)
-                    token = jwt.encode(payload, settings.SECRET_KEY)
+                    token = get_jwt_token(user)
                     user_logged_in.send(sender=user.__class__,
                                         request=request, user=user)
                     return Response({'token': token}, status=status.HTTP_200_OK)

@@ -13,3 +13,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
         fields = "email", 'password', "username"
+
+
+class UserAuthSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    token = serializers.CharField()
