@@ -23,7 +23,7 @@ from department import urls as department_urls
 urlpatterns = [
     path('api/', include([
         path('admin/', admin.site.urls),
-        path('user/', include(account_urls),
-        path('department/', include(department_urls)),),
+        path('user/', include(account_urls)),
+        path('department/', include(department_urls)),
     ]))
 ]
