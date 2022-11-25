@@ -43,3 +43,24 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("User")
         verbose_name_plural = _("User")
         db_table = "auth_user"
+
+
+class UserRelationship(models.Model):
+    user1 = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=False, null=False, related_name="relationship1")
+    user2 = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=False, null=False, related_name="relationship2")
+    introduced = models.BooleanField(default=False, blank=False, null=False)
+
+    class Meta:
+        verbose_name = _("UserRelationship")
+        verbose_name_plural = _("UserRelationships")
+        db_table = "user_relationship"
+        unique_together = ("user1", "user2",)
+
+    @staticmethod
+    def introduce(user1, user2, introduced):
+        try:
+            relationship = UserRelationship.objects.create(user1=user1, user2=user2, introduced=introduced)
+            relationship.save()
+            return True
+        except Exception as e:
+            return False
