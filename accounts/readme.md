@@ -126,7 +126,7 @@ url - /get_profile/
 ```
 ***
 
-##### Запрос профиля
+##### Запрос профилей
 Метод GET  
 Требует авторизации  
 url - /list_of_users/
@@ -155,6 +155,62 @@ url - /list_of_users/
         "avatar": null,
         "grade": "MIDDLE",
         "specialization": "Бекенд-разработчик"
+    }
+]
+```
+Ошибка при неавторизованном запросе
+```json
+{
+    "detail": "Authentication credentials were not provided."
+}
+```
+***
+##### Фильтрация пользователей
+Метод GET  
+Требует авторизации  
+url - /list_of_users_filter/
+Доступные фильтры:
+page - номер страницы, 
+limit_of_set - количество объектов на странице
+список доступных полей для фильтрации -  email, first_name, last_name, patronymic, grade, specialization
+список доступных полей для упорядочивания -  email, first_name, last_name, patronymic, grade, specialization, random
+not_empty - исключает записи со значением null и "" в любом из полей для фильтрации, принимает только значение true, остальные игнорируются
+
+Пример запроса 
+```
+http://127.0.0.1:8000/api/user/list_of_users_filter?order=random&not_empty=true&limit_of_set=100&first_name=Алиса&page=0
+```
+***
+Ответ
+```json
+[
+    {
+        "id": 30,
+        "first_name": "Алиса",
+        "last_name": "Губанова",
+        "patronymic": "Павловна",
+        "email": "test7@test.com",
+        "token": "",
+        "avatar": null,
+        "grade": "SENIOR",
+        "specialization": "Бекенд-разработчик",
+        "date_birthday": "2002-11-18",
+        "department": {},
+        "uuid": "2d14ffc8-153a-433d-84b8-523d7ab7f43b"
+    },
+    {
+        "id": 33,
+        "first_name": "Алиса",
+        "last_name": "Егорова",
+        "patronymic": "Дамировна",
+        "email": "test10@test.com",
+        "token": "",
+        "avatar": null,
+        "grade": "MIDDLE",
+        "specialization": "Дизайнер",
+        "date_birthday": "1989-01-05",
+        "department": {},
+        "uuid": "ed1bf3b3-b66b-4182-8d99-d417cfb25d63"
     }
 ]
 ```

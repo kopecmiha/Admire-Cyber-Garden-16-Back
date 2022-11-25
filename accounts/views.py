@@ -1,6 +1,8 @@
 import json
 import re
 import uuid
+from functools import reduce
+from operator import or_
 
 import jwt
 from django.contrib.auth import user_logged_in
@@ -23,6 +25,15 @@ allowed_fileds_to_order = [
     "grade",
     "specialization",
     "random"
+]
+
+allowed_fileds_to_filter = [
+    "email",
+    "first_name",
+    "last_name",
+    "patronymic",
+    "grade",
+    "specialization",
 ]
 
 
@@ -122,16 +133,27 @@ class GetListOfUsersFilter(APIView):
 
     def get(self, request, **kwargs):
         params = request.query_params
-        limit_of_set = params.get("limit_of_set", 10)
-        page = params.get("page", 0)
+        limit_of_set = int(params.get("limit_of_set", 10))
+        page = int(params.get("page", 0))
         order = params.get("order", None)
+        filter_fields = {}
+        exclude_fields = []
+        not_empty = params.get("not_empty", None)
+        if not_empty == "true":
+            for item in allowed_fileds_to_filter:
+                exclude_fields.append(Q(**{item + "__isnull": True}))
+                exclude_fields.append(Q(**{item: ""}))
+        for key, value in params.items():
+            if key in allowed_fileds_to_filter:
+                if isinstance(value, (str, int)):
+                    filter_fields.update({key + "__contains": value})
         if order not in allowed_fileds_to_order or not order:
             order = "last_name"
         if order == "random":
             order = "?"
         start = page * limit_of_set
         last = start + limit_of_set
-        users = User.objects.all().order_by(order)[start:last]
+        users = User.objects.filter(**filter_fields).exclude(reduce(or_, exclude_fields)).order_by(order)[start:last]
         serializer = UserSerializer(users, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
