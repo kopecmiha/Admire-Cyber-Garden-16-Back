@@ -15,6 +15,16 @@ from rest_framework.views import APIView
 from accounts.models import User
 from accounts.serializer import UserSerializer, UserCreateSerializer
 
+allowed_fileds_to_order = [
+    "email",
+    "first_name",
+    "last_name",
+    "patronymic",
+    "grade",
+    "specialization",
+    "random"
+]
+
 
 class CreateUser(APIView):
     permission_classes = (AllowAny,)
@@ -62,7 +72,7 @@ class Parse(APIView):
                 if grade == "N/A":
                     grade = "NULL"
                 day, month, year = people["Дата рождения"].split(".")
-                date_birthday = str(year)+"-"+str(month)+"-"+str(day)
+                date_birthday = str(year) + "-" + str(month) + "-" + str(day)
                 specialization = people["Должность"]
                 fact1 = people["Факт 1"]
                 fact2 = people["Факт 2"]
@@ -89,6 +99,26 @@ class GetListOfUsers(APIView):
 
     def get(self, request):
         users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        response = serializer.data
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class GetListOfUsersFilter(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, **kwargs):
+        params = request.query_params
+        limit_of_set = params.get("limit_of_set", 10)
+        page = params.get("page", 0)
+        order = params.get("order", None)
+        if order not in allowed_fileds_to_order or not order:
+            order = "last_name"
+        if order == "random":
+            order = "?"
+        start = page * limit_of_set
+        last = start + limit_of_set
+        users = User.objects.all().order_by(order)[start:last]
         serializer = UserSerializer(users, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
