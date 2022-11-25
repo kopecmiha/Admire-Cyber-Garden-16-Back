@@ -14,7 +14,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.models import User
+from accounts.models import User, UserRelationship
 from accounts.serializer import UserSerializer, UserCreateSerializer
 
 allowed_fileds_to_order = [
@@ -176,6 +176,24 @@ class UpdateUserProfile(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+class IntroduceView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        user_username = request.data.get("user_id")
+        is_introduced = request.data.get("status")
+        user_filter = User.objects.filter(username=user_username).filter()
+        if user_filter:
+            user_id = user_filter.first()
+            result = UserRelationship.introduce(
+                user1=request.user, user2=user_id, introduced=is_introduced
+            )
+            if result:
+                return Response(status=status.HTTP_200_OK)
+            return Response({"message": "Already introduced"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "User does not  exist"}, status=status.HTTP_404_NOT_FOUND)
+
+
 class ObtainToken(APIView):
     permission_classes = (AllowAny,)
 
@@ -202,3 +220,26 @@ class ObtainToken(APIView):
                     raise e
         except (KeyError, ObjectDoesNotExist):
             return Response({"error": 'Please provide right login and a password'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class RandomUser(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        requester = request.user
+        introduced = UserRelationship.objects.filter(user1=requester)
+        introduced_values_list = list(introduced.values_list("user2_id", flat=True))
+        not_introduced = User.objects.exclude(pk__in=introduced_values_list +[requester.id]) #.order_by("?")
+        if not_introduced:
+            result_user = not_introduced.first()
+        else:
+            introduced.filter(introduced=False).delete()
+            introduced = list(UserRelationship.objects.filter(user1=requester).values_list("user2_id", flat=True))
+            not_introduced = User.objects.exclude(pk__in=introduced + [requester.id]).order_by("?")
+            if not_introduced:
+                result_user = not_introduced.first()
+            else:
+                return Response({"message": "You're already introduced to everyone"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = UserSerializer(result_user)
+        response = serializer.data
+        return Response(response, status=status.HTTP_200_OK)
