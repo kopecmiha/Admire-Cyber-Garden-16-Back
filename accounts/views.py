@@ -10,12 +10,9 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.serializers import jwt_payload_handler
 
 from accounts.models import User
-from accounts.serializer import UserSerializer, UserCreateSerializer, UserAuthSerializer
-from accounts.utils import get_jwt_token
-from main import settings
+from accounts.serializer import UserSerializer, UserCreateSerializer
 
 
 class CreateUser(APIView):
@@ -27,16 +24,24 @@ class CreateUser(APIView):
         serializer = UserCreateSerializer(data=request)
         serializer.is_valid(raise_exception=True)
         serializer.save(password=make_password(request['password']))
-        #user = User.objects.get(email=serializer.data["email"])
-        #token = get_jwt_token(user)
-        #user_data = {"token": token, user: user}
-        #response = UserAuthSerializer
-        #user_logged_in.send(sender=user.__class__,
-        #                    request=request, user=user)
-        return Response("aaaa", status=status.HTTP_201_CREATED)
+        user = User.objects.get(email=serializer.data["email"])
+        response = UserSerializer(user, context={"is_auth": True}).data
+        user_logged_in.send(sender=user.__class__,
+                            request=request, user=user)
+        return Response(response, status=status.HTTP_201_CREATED)
 
 
 class GetUserProfile(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        response = serializer.data
+        return Response(response, status=status.HTTP_200_OK)
+
+
+class GetListOfUsers(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
@@ -80,10 +85,10 @@ class ObtainToken(APIView):
                                 status=status.HTTP_401_UNAUTHORIZED)
             if user:
                 try:
-                    token = get_jwt_token(user)
+                    response = UserSerializer(user, context={"is_auth": True}).data
                     user_logged_in.send(sender=user.__class__,
                                         request=request, user=user)
-                    return Response({'token': token}, status=status.HTTP_200_OK)
+                    return Response(response, status=status.HTTP_200_OK)
 
                 except Exception as e:
                     raise e
