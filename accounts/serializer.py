@@ -22,7 +22,9 @@ class UserSerializer(serializers.ModelSerializer):
                 chief_dict = {"chief_id": chief.pk, "chief_name": chief_name}
             else:
                 chief_dict = {}
-            return {"id": user_department.id, "title": user_department.title}.update(chief_dict)
+            department_dict = {"id": user_department.id, "title": user_department.title}
+            department_dict.update(chief_dict)
+            return department_dict
         return {}
 
 
