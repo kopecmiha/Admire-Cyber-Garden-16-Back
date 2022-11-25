@@ -10,6 +10,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         SENIOR = "SENIOR"
         MIDDLE = "MIDDLE"
         JUNIOR = "JUNIOR"
+        NULL = "NULL"
     uuid = models.UUIDField(
         default=uuid4, editable=False, verbose_name=_("UUID Field"), db_index=True
     )
