@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'accounts',
-    "department"
+    "department",
+    "statistic",
 ]
 
 MIDDLEWARE = [
