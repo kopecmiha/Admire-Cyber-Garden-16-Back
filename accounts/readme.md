@@ -67,11 +67,13 @@ url - /update_profile/
     "first_name":"Вася"
 }
 ```
-доступные поля для редактирования:
-first_name  
-last_name  
-patronymic  
-avatar - картинку передавать в form-data по ключу "avatar"  
+доступные поля для редактирования:  
+first_name;  
+last_name;  
+patronymic;  
+specialization;  
+grade - возможные значения - "SENIOR", "MIDDLE", "JUNIOR";  
+avatar - картинку передавать в form-data по ключу "avatar";   
 
 Ответ
 ```json

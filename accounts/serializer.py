@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = User
-        fields = "first_name", "last_name", "patronymic", "email", "uuid", "token",
+        fields = "first_name", "last_name", "patronymic", "email", "uuid", "token", "avatar", "grade", "specialization",
         extra_kwargs = {'uuid': {'read_only': True}, "token": {'read_only': True}}
 
 
