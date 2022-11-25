@@ -12,7 +12,7 @@ url - /create_user/
 ```json
 {
     "email": "test@test.com",
-    "password":"12345",
+    "password":"12345"
 }
 ```
 
@@ -117,6 +117,46 @@ url - /get_profile/
     "patronymic": null,
     "avatar": null
 }
+```
+Ошибка при неавторизованном запросе
+```json
+{
+    "detail": "Authentication credentials were not provided."
+}
+```
+***
+
+##### Запрос профиля
+Метод GET  
+Требует авторизации  
+url - /list_of_users/
+***
+Ответ
+```json
+[
+    {
+        "first_name": "Надежда",
+        "last_name": "Абрамова",
+        "patronymic": "Тимуровна",
+        "email": "test1@test.com",
+        "uuid": "45e07bbb-6c71-431b-81a4-880426f909b1",
+        "token": "",
+        "avatar": null,
+        "grade": "JUNIOR",
+        "specialization": "Бекенд-разработчик"
+    },
+    {
+        "first_name": "Марк",
+        "last_name": "Акимов",
+        "patronymic": "Львович",
+        "email": "test2@test.com",
+        "uuid": "df9e49b9-3c08-4aff-a315-aeb2df01bb16",
+        "token": "",
+        "avatar": null,
+        "grade": "MIDDLE",
+        "specialization": "Бекенд-разработчик"
+    }
+]
 ```
 Ошибка при неавторизованном запросе
 ```json
