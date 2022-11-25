@@ -11,9 +11,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         MIDDLE = "MIDDLE"
         JUNIOR = "JUNIOR"
         NULL = "NULL"
-    uuid = models.UUIDField(
-        default=uuid4, editable=False, verbose_name=_("UUID Field"), db_index=True
-    )
     username = models.CharField(_("Username"), default=uuid4, editable=False, unique=True, max_length=100)
     email = models.EmailField(_("Email address"), unique=True, null=True, blank=False)
     first_name = models.CharField(_("First name"), max_length=30, null=True, blank=True)
