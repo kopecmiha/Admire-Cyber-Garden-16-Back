@@ -12,21 +12,16 @@ from rest_framework.views import APIView
 from rest_framework_jwt.serializers import jwt_payload_handler
 
 from accounts.models import User
-from accounts.permissions import IsTeacherOrDean, IsDean
-from accounts.serializer import UserSerializer, UserProfileSerializer
+from accounts.serializer import UserSerializer, UserCreateSerializer
 from main import settings
 
 
 class CreateUser(APIView):
-    permission_classes = (IsTeacherOrDean,)
+    permission_classes = (AllowAny,)
 
     def post(self, request):
         request = request.data
-        user_status = request["status"]
-        if user_status == "DEAN":
-            return Response({"error": "You can create dean account only with invite code"},
-                            status=status.HTTP_403_FORBIDDEN)
-        serializer = UserSerializer(data=request)
+        serializer = UserCreateSerializer(data=request)
         serializer.is_valid(raise_exception=True)
         serializer.save(password=make_password(request['password']))
         return Response({"message": "User succesfully created"}, status=status.HTTP_201_CREATED)
@@ -37,7 +32,7 @@ class GetUserProfile(APIView):
 
     def get(self, request):
         user = request.user
-        serializer = UserProfileSerializer(user)
+        serializer = UserSerializer(user)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
 
@@ -50,7 +45,7 @@ class UpdateUserProfile(APIView):
         serializer_data = request.data
         if avatar:
             serializer_data.update({"avatar": avatar})
-        serializer = UserProfileSerializer(
+        serializer = UserSerializer(
             request.user, data=serializer_data, partial=True
         )
         serializer.is_valid(raise_exception=True)
