@@ -1,20 +1,9 @@
-import re
-
-import jwt
-from django.contrib.auth import user_logged_in
-from django.contrib.auth.hashers import make_password
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.db.models import Q
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_jwt.serializers import jwt_payload_handler
-
-from accounts.models import User
-from department.serializer import DepartmentSerializer
+from department.serializer import DepartmentSerializer, DepartmentViewSerializer
 from department.models import Department
-from main import settings
 
 
 class CreateDepartment(APIView):
@@ -33,9 +22,7 @@ class UpdateDepartment(APIView):
 
     def put(self, request):
         serializer_data = request.data
-        serializer = DepartmentSerializer(
-            request.user, data=serializer_data, partial=True
-        )
+        serializer = DepartmentSerializer(data=serializer_data, partial=1)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         response = serializer.data
@@ -52,13 +39,12 @@ class DeleteDepartment(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-
 class GetDepartments(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         departments = Department.objects.all()
-        serializer = DepartmentSerializer(instance=departments, many=True)
+        serializer = DepartmentViewSerializer(instance=departments, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
 
