@@ -5,12 +5,11 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
-        fields = "first_name", "last_name", "patronymic", "email"
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = "first_name", "last_name", "patronymic", "email", 'password', "uuid",
+        extra_kwargs = {'uuid': {'read_only': True}}
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = User
-        fields = "first_name", "last_name", "patronymic", "avatar", "status", "email", "uuid"
-        extra_kwargs = {'status': {'read_only': True}, 'uuid': {'read_only': True}, "email": {'read_only': True}}
+        fields = "email", 'password', "username"

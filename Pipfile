@@ -10,6 +10,7 @@ gunicorn = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
 djangorestframework-jwt-4 = "*"
+pyjwt = "==1.7.1"
 
 [dev-packages]
 

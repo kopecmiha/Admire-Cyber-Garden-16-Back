@@ -9,8 +9,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(
         default=uuid4, editable=False, verbose_name=_("UUID Field"), db_index=True
     )
-    username = models.CharField(_("Username"), default=uuid4, editable=False, unique=True, max_length=100)
-    email = models.EmailField(_("Email address"), null=True, blank=True)
+    email = models.EmailField(_("Email address"), unique=True, null=True, blank=False)
     first_name = models.CharField(_("First name"), max_length=30, null=True, blank=True)
     last_name = models.CharField(_("Last name"), max_length=30, null=True, blank=True)
     patronymic = models.CharField(_("Patronymic"), max_length=30, null=True, blank=True)
@@ -21,7 +20,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = "username"
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     def __str__(self):
