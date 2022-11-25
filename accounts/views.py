@@ -25,6 +25,15 @@ allowed_fileds_to_order = [
     "random"
 ]
 
+allowed_fileds_to_filter = [
+    "email",
+    "first_name",
+    "last_name",
+    "patronymic",
+    "grade",
+    "specialization",
+]
+
 
 class CreateUser(APIView):
     permission_classes = (AllowAny,)
@@ -112,13 +121,19 @@ class GetListOfUsersFilter(APIView):
         limit_of_set = params.get("limit_of_set", 10)
         page = params.get("page", 0)
         order = params.get("order", None)
+        filter_type = params.get("filter_type", 10)
+        filter_fields = {}
+        for key, value in params.items():
+            if key in allowed_fileds_to_filter:
+                if isinstance(value, (str, int)):
+                    filter_fields.update({key: value})
         if order not in allowed_fileds_to_order or not order:
             order = "last_name"
         if order == "random":
             order = "?"
         start = page * limit_of_set
         last = start + limit_of_set
-        users = User.objects.all().order_by(order)[start:last]
+        users = User.objects.filter(**filter_fields).order_by(order)[start:last]
         serializer = UserSerializer(users, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
