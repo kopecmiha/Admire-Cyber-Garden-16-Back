@@ -8,11 +8,10 @@ django = "==4.0.2"
 psycopg2 = "*"
 gunicorn = "*"
 djangorestframework = "*"
-djangorestframework-jwt = "*"
 djangorestframework-simplejwt = "*"
+djangorestframework-jwt-4 = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
-python_full_version = "3.9.9"
