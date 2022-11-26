@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'accounts',
     "department",
     "statistic",
-    "collection"
+    "collection",
+    "store",
 ]
 
 MIDDLEWARE = [

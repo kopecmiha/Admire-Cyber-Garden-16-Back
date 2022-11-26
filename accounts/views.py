@@ -148,7 +148,7 @@ class GetListOfUsersFilter(APIView):
         if not_empty:
             not_empty_fields = not_empty.split(",")
             for item in not_empty_fields:
-                if item in allowed_fileds_to_filter:
+                if item in allowed_fileds_to_filter or item == "avatar":
                     exclude_fields.append(Q(**{item + "__isnull": True}))
                     exclude_fields.append(Q(**{item: ""}))
         for key, value in params.items():
@@ -250,7 +250,8 @@ class RandomUser(APIView):
         uuid_to_exclude = list(User.objects.filter(username__in=uuid_to_exclude).values_list("id", flat=True))
         introduced = UserRelationship.objects.filter(user1=requester)
         introduced_values_list = list(introduced.values_list("user2_id", flat=True))
-        not_introduced = User.objects.exclude(pk__in=introduced_values_list +[requester.id] + uuid_to_exclude).order_by("?")
+        not_introduced = User.objects.exclude(
+            pk__in=introduced_values_list + [requester.id] + uuid_to_exclude).order_by("?")
         if not_introduced:
             result_user = not_introduced[:limit_of_set]
         else:
