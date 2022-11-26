@@ -20,7 +20,8 @@ class SpawnPlayCard(APIView):
         serializer = PlayCardSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response({"message": "Playcard successfully created"}, status=status.HTTP_201_CREATED)
+        response = serializer.data
+        return Response(response, status=status.HTTP_201_CREATED)
 
 
 class PlayCardsView(APIView):

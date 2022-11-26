@@ -56,8 +56,10 @@ class GetDepartments(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
+        params = request.query_params
+        resolve_members = params.get("members", False)
         departments = Department.objects.all()
-        serializer = DepartmentViewSerializer(instance=departments, many=True)
+        serializer = DepartmentViewSerializer(instance=departments, many=True, context={"resolve_members": resolve_members})
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
 
@@ -67,8 +69,10 @@ class GetDepartment(APIView):
 
     def get(self, request, department_id):
         try:
+            params = request.query_params
+            resolve_members = params.get("members", False)
             department = Department.objects.get(pk=department_id)
-            serializer = DepartmentViewSerializer(instance=department)
+            serializer = DepartmentViewSerializer(instance=department, context={"resolve_members": resolve_members})
             response = serializer.data
         except ObjectDoesNotExist:
             return Response({"message": "Department not found"}, status=status.HTTP_200_OK)
