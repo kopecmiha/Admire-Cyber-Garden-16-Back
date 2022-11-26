@@ -225,3 +225,30 @@ http://127.0.0.1:8000/api/user/list_of_users_filter?order=random&not_empty=true&
 сгенерить города(10 разных)
 40% пользователей в офисах, 60% - удаленщики
 в городах с офисом в основном удаленщик
+
+##### Сменить пароль
+Метод POST  
+url - /change_password/
+***
+Запрос
+```json
+{
+    "old_password": "12345",
+    "new_password": "123456"
+}
+```
+
+Ответ
+```json
+{
+    "message": "Successfully change password"
+}
+```
+
+Ответ неверный страый пароль
+```json
+{
+    "error": "Not valid password"
+}
+```
+***

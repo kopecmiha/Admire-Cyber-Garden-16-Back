@@ -241,11 +241,11 @@ class ChangePassword(APIView):
         user = request.user
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
-        hash_old_password = make_password(old_password)
         if not old_password or not new_password:
             return Response({"error": "Empty password"}, status=status.HTTP_403_FORBIDDEN)
-        if hash_old_password == user.password:
+        if user.check_password(old_password):
             user.password = make_password(new_password)
+            user.save()
         else:
             return Response({"error": "Not valid password"}, status=status.HTTP_403_FORBIDDEN)
         return Response({"message": "Successfully change password"}, status=status.HTTP_200_OK)
