@@ -94,7 +94,7 @@ class SetDepartment(APIView):
                 department_dict["Мобильная разработка"].members.add(user)
             elif "бухгалтер" in user.specialization.lower():
                 department_dict["Коммерческий отдел"].members.add(user)
-            elif user.specialization.lower() in ["дизайнер", "маркетолог", "Контент-менеджер"]:
+            elif user.specialization.lower() in ["дизайнер", "маркетолог", "контент-менеджер"]:
                 department_dict["Диджитал контент"].members.add(user)
             elif user.specialization.lower() in ["инженер техподдержки", "тестировщик", ]:
                 department_dict["QA"].members.add(user)

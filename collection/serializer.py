@@ -25,9 +25,9 @@ class DepartmentCollectionSerializer(serializers.ModelSerializer):
     top_deck = serializers.SerializerMethodField("resolver_top_deck")
 
     def resolver_top_deck(self, department):
-        playcard_set = PlayCard.objects.filter(person__department_members=department).order_by("pk")
+        playcard_set = PlayCard.objects.filter(person__department_members=department, owner=self.context.get("user")).order_by("pk")
         if playcard_set:
-            return PlayCardViewSerializer(playcard_set.first())
+            return PlayCardViewSerializer(playcard_set.first()).data
         return {}
 
     class Meta(object):
