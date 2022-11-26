@@ -36,6 +36,7 @@ allowed_fileds_to_filter = [
     "patronymic",
     "grade",
     "specialization",
+    "city",
 ]
 
 
@@ -263,3 +264,33 @@ class IsIntroduced(APIView):
         if UserRelationship.objects.filter(user1=user1, user2=user2).exists():
             return Response({"is_introduced": True}, status=status.HTTP_200_OK)
         return Response({"is_introduced": False}, status=status.HTTP_204_NO_CONTENT)
+
+
+class TextSearch(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        params = request.query_params
+        search_text = params.get("search_text")
+        page = int(params.get("page", 0))
+        limit_of_set = int(params.get("limit_of_set", 10))
+        start = page * limit_of_set
+        last = start + limit_of_set
+        filter_fields = []
+        query_filter = Q(id__gte=0)
+        if search_text:
+            for item in allowed_fileds_to_filter + ["fact1"]:
+                filter_fields.append(Q(**{item + "__icontains": search_text}))
+                query_filter = reduce(or_, filter_fields)
+        search_results = User.objects.filter(query_filter)[start:last]
+        result = UserSerializer(instance=search_results, many=True)
+        return Response(result.data, status=status.HTTP_204_NO_CONTENT)
+
+
+class RelatedCount(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        all_count = User.objects.all().count()
+        introduced_count = UserRelationship.objects.filter(Q(user1=request.user) & Q(introduced=True)).count()
+        return Response({"all_count": all_count, "introduced_count": introduced_count}, status=status.HTTP_200_OK)
