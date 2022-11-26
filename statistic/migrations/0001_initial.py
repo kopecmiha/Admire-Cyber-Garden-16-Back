@@ -15,20 +15,43 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='GameSession',
+            name="GameSession",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('duration', models.BigIntegerField(default=0)),
-                ('finished', models.DateTimeField(null=True)),
-                ('points', models.IntegerField(default=0)),
-                ('game_type', models.CharField(choices=[('full-name', 'Full Name'), ('mapping', 'Mapping')], max_length=10, null=True)),
-                ('try_count', models.IntegerField(default=0)),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("duration", models.BigIntegerField(default=0)),
+                ("finished", models.DateTimeField(null=True)),
+                ("points", models.IntegerField(default=0)),
+                (
+                    "game_type",
+                    models.CharField(
+                        choices=[("full-name", "Full Name"), ("mapping", "Mapping")],
+                        max_length=10,
+                        null=True,
+                    ),
+                ),
+                ("try_count", models.IntegerField(default=0)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'GameSession',
-                'verbose_name_plural': 'GameSession',
-                'db_table': 'game_sessions',
+                "verbose_name": "GameSession",
+                "verbose_name_plural": "GameSession",
+                "db_table": "game_sessions",
             },
         ),
     ]

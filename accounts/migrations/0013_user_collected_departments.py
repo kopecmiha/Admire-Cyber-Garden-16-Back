@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0012_userrelationship_introduced'),
+        ("accounts", "0012_userrelationship_introduced"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='collected_departments',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(), default=list, size=None),
+            model_name="user",
+            name="collected_departments",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.IntegerField(), default=list, size=None
+            ),
         ),
     ]

@@ -12,7 +12,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         MIDDLE = "MIDDLE"
         JUNIOR = "JUNIOR"
         NULL = "NULL"
-    username = models.CharField(_("Username"), default=uuid4, editable=False, unique=True, max_length=100)
+
+    username = models.CharField(
+        _("Username"), default=uuid4, editable=False, unique=True, max_length=100
+    )
     email = models.EmailField(_("Email address"), unique=True, null=True, blank=False)
     first_name = models.CharField(_("First name"), max_length=30, null=True, blank=True)
     last_name = models.CharField(_("Last name"), max_length=30, null=True, blank=True)
@@ -27,7 +30,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         choices=GradeEnum.choices,
         default=GradeEnum.JUNIOR,
     )
-    specialization = models.CharField(_("Specialization"), max_length=256, null=True, blank=True)
+    specialization = models.CharField(
+        _("Specialization"), max_length=256, null=True, blank=True
+    )
     date_birthday = models.DateField(null=True, blank=True)
     fact1 = models.TextField(null=True, blank=True)
     fact2 = models.TextField(null=True, blank=True)
@@ -50,20 +55,37 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserRelationship(models.Model):
-    user1 = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=False, null=False, related_name="relationship1")
-    user2 = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=False, null=False, related_name="relationship2")
+    user1 = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="relationship1",
+    )
+    user2 = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name="relationship2",
+    )
     introduced = models.BooleanField(default=False, blank=False, null=False)
 
     class Meta:
         verbose_name = _("UserRelationship")
         verbose_name_plural = _("UserRelationships")
         db_table = "user_relationship"
-        unique_together = ("user1", "user2",)
+        unique_together = (
+            "user1",
+            "user2",
+        )
 
     @staticmethod
     def introduce(user1, user2, introduced):
         try:
-            relationship = UserRelationship.objects.create(user1=user1, user2=user2, introduced=introduced)
+            relationship = UserRelationship.objects.create(
+                user1=user1, user2=user2, introduced=introduced
+            )
             relationship.save()
             return True
         except Exception as e:

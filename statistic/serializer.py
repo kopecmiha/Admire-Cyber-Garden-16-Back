@@ -7,4 +7,3 @@ class GameSessionSerializer(serializers.ModelSerializer):
         model = GameSession
         fields = "id", "finished", "points", "game_type", "try_count", "duration"
         extra_fields = {"id": {"read_only": True}}
-

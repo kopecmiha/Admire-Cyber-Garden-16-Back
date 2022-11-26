@@ -15,13 +15,15 @@ def get_jwt_token(user):
 
 
 def get_user_balance(user):
-    collection_income = Department.objects.filter(
-        id__in=user.collected_departments).annotate(members_count=Count('members')).values_list("members_count",
-                                                                                                flat=True)
+    collection_income = (
+        Department.objects.filter(id__in=user.collected_departments)
+        .annotate(members_count=Count("members"))
+        .values_list("members_count", flat=True)
+    )
     collection_income = sum(list(collection_income)) * 10
-    income = GameSession.objects.filter(user=user).aggregate(points_sum=Sum('points'))
+    income = GameSession.objects.filter(user=user).aggregate(points_sum=Sum("points"))
     income = income.get("points_sum") if income.get("points_sum") else 0
-    expences = TradeStory.objects.filter(user=user).aggregate(points_sum=Sum('price'))
+    expences = TradeStory.objects.filter(user=user).aggregate(points_sum=Sum("price"))
     expences = expences.get("points_sum") if expences.get("points_sum") else 0
     balance = collection_income + income - expences
     return balance
