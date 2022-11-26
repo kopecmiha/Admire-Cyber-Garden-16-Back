@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  db:
+    restart: unless-stopped
+    image: postgres:14.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - app_network
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_PASSWORD}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+
+  hack_app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        DATABASE_NAME: ${DATABASE_NAME}
+        DATABASE_USER: ${DATABASE_USER}
+        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+        DATABASE_HOST: ${DATABASE_HOST}
+        DATABASE_PORT: ${DATABASE_PORT}
+    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
+    depends_on:
+      - db
+    networks:
+      - app_network
+      - server
+    volumes:
+      - static:/usr/src/app/static
+      - media:/usr/src/app/media
+
+  nginx:
+    restart: unless-stopped
+    container_name: hack_container
+    build: .nginx
+    volumes:
+      - static:/app/static
+      - media:/app/media
+    depends_on:
+      - hack_app
+    networks:
+      - app_network
+      - server
+
+
+networks:
+  app_network:
+    driver: bridge
+  server:
+    external: true
+
+volumes:
+  postgres_data:
+  static:
+  media:
