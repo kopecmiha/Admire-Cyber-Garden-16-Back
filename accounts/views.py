@@ -264,3 +264,19 @@ class RandomUser(APIView):
         serializer = UserSerializer(instance=result_user, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
+
+
+class IsIntroduced(APIView):
+
+    permission_classes = (AllowAny,)
+
+
+    def get(self, request):
+        params = request.query_params
+        user1 = params.get("user1")
+        user2 = params.get("user2")
+        user1 = User.objects.get(username=user1)
+        user2 = User.objects.get(username=user2)
+        if UserRelationship.objects.filter(user1=user1, user2=user2).exists():
+            return Response({"is_introduced": True}, status=status.HTTP_200_OK)
+        return Response({"is_introduced": False}, status=status.HTTP_204_NO_CONTENT)
