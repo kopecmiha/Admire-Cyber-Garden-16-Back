@@ -47,3 +47,16 @@ class UserPlayCardsView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+class DepartmentPlayCardView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, user_id):
+        try:
+            user = User.objects.get(username=user_id)
+            user_cards = PlayCard.objects.filter(owner=user)
+            serializer = PlayCardViewSerializer(instance=user_cards, many=True)
+            response = serializer.data
+        except ObjectDoesNotExist:
+            return Response({"message": "User does not exist"}, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
+
