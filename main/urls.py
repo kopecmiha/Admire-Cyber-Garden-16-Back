@@ -21,6 +21,7 @@ from department import urls as department_urls
 from main import settings
 from statistic import urls as statistic_urls
 from collection import urls as collection_urls
+from store import urls as store_urls
 
 urlpatterns = [
     path('api/', include([
@@ -29,6 +30,7 @@ urlpatterns = [
         path('department/', include(department_urls)),
         path('statistic/', include(statistic_urls)),
         path('collection/', include(collection_urls)),
+        path('store/', include(store_urls)),
     ]))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
