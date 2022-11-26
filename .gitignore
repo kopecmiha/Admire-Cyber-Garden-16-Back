@@ -2,3 +2,4 @@
 /static/
 /media/
 /Pipfile.lock
+__pycache__/
