@@ -227,19 +227,23 @@ class RandomUser(APIView):
 
     def get(self, request):
         requester = request.user
+        params = request.query_params
+        limit_of_set = int(params.get("limit_of_set", 10))
+        uuid_to_exclude = params.get("uuid_to_exclude", "").split(",")
+        uuid_to_exclude = list(User.objects.filter(username__in=uuid_to_exclude).values_list("id", flat=True))
         introduced = UserRelationship.objects.filter(user1=requester)
         introduced_values_list = list(introduced.values_list("user2_id", flat=True))
-        not_introduced = User.objects.exclude(pk__in=introduced_values_list +[requester.id]) #.order_by("?")
+        not_introduced = User.objects.exclude(pk__in=introduced_values_list +[requester.id] + uuid_to_exclude).order_by("?")
         if not_introduced:
-            result_user = not_introduced.first()
+            result_user = not_introduced[:limit_of_set]
         else:
             introduced.filter(introduced=False).delete()
             introduced = list(UserRelationship.objects.filter(user1=requester).values_list("user2_id", flat=True))
-            not_introduced = User.objects.exclude(pk__in=introduced + [requester.id]).order_by("?")
+            not_introduced = User.objects.exclude(pk__in=introduced + [requester.id] + uuid_to_exclude).order_by("?")
             if not_introduced:
-                result_user = not_introduced.first()
+                result_user = not_introduced[:limit_of_set]
             else:
                 return Response({"message": "You're already introduced to everyone"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = UserSerializer(result_user)
+        serializer = UserSerializer(instance=result_user, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
