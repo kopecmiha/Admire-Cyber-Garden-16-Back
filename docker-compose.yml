@@ -31,8 +31,8 @@ services:
       - app_network
       - server
     volumes:
-      - static:/usr/src/app/static
-      - media:/usr/src/app/media
+      - static:/app/static
+      - media:/app/media
 
   nginx:
     restart: unless-stopped
