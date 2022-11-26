@@ -1,4 +1,5 @@
 import json
+import random
 import re
 import uuid
 from functools import reduce
@@ -80,41 +81,25 @@ class Parse(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request):
-        with open('people.json', encoding="utf8") as json_data:
-            people_list = json.load(json_data)
-            i = 0
-            for people in people_list:
-                i += 1
-                last_name, first_name, patronymic = people["ФИО"].split(" ")
-                grade = people["Грейд"]
-                if grade == "Джуниор":
-                    grade = "JUNIOR"
-                if grade == "Мидл":
-                    grade = "MIDDLE"
-                if grade == "Сеньор":
-                    grade = "SENIOR"
-                if grade == "N/A":
-                    grade = "NULL"
-                day, month, year = people["Дата рождения"].split(".")
-                date_birthday = str(year) + "-" + str(month) + "-" + str(day)
-                specialization = people["Должность"]
-                fact1 = people["Факт 1"]
-                fact2 = people["Факт 2"]
-                fact3 = people["Факт 3"]
-                user_json = {
-                    "email": "test" + str(i) + "@test.com",
-                    "last_name": last_name,
-                    "first_name": first_name,
-                    "patronymic": patronymic,
-                    "grade": grade,
-                    "date_birthday": date_birthday,
-                    "specialization": specialization,
-                    "fact1": fact1,
-                    "fact2": fact2,
-                    "fact3": fact3,
-                    "password": "pbkdf2_sha256$320000$mg8W8jhiNagFAQ0bUdVhpT$7/D56fxBGnLDyWzhe6WVzRFXCOAbom8q+6hP6oRJ0+4="
-                }
-                User.objects.create(**user_json)
+        city_list_office = ["Ростов-на-Дону", "Таганрог"]
+        city_list_online = ["Новороссийск", "Краснодар", "Воронеж", "Ставрополь", "Байтаск", "Армавир", "Санкт-Петребург", "Москва"]
+        users = User.objects.all()
+        for user in users:
+            random_city = random.randint(0, 100)
+            if random_city <= 40:
+                user.city = random.choice(city_list_office)
+                user.online = False
+                user.save()
+            else:
+                random_city_2 = random.randint(0, 100)
+                if random_city_2 <= 10:
+                    user.city = random.choice(city_list_office)
+                    user.online = True
+                    user.save()
+                else:
+                    user.city = random.choice(city_list_online)
+                    user.online = True
+                    user.save()
         return Response("ok", status=status.HTTP_200_OK)
 
 
