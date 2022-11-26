@@ -27,11 +27,11 @@ COPY . .
 
 RUN pipenv install -d --pre
 
-RUN echo "DATABASE_NAME=$DATABASE_NAME" > .env
-RUN echo "DATABASE_USER=$DATABASE_USER" >> .env
-RUN echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env
-RUN echo "DATABASE_HOST=$DATABASE_HOST" >> .env
-RUN echo "DATABASE_PORT=$DATABASE_HOST" >> .env
+#RUN echo "DATABASE_NAME=$DATABASE_NAME" > .env
+#RUN echo "DATABASE_USER=$DATABASE_USER" >> .env
+#RUN echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env
+#RUN echo "DATABASE_HOST=$DATABASE_HOST" >> .env
+#RUN echo "DATABASE_PORT=$DATABASE_HOST" >> .env
 COPY . .
 RUN chmod +x entrypoint.sh
 ENTRYPOINT ["sh", "entrypoint.sh" ]

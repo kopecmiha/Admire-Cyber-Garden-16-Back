@@ -14,9 +14,11 @@ def get_jwt_token(user):
     token = jwt.encode(payload, settings.SECRET_KEY)
     return token
 
+
 def get_user_balance(user):
     collection_income = Department.objects.filter(
-        id__in=user.collected_departments).annotate(members_count=Count('members')).values_list("members_count", flat=True)
+        id__in=user.collected_departments).annotate(members_count=Count('members')).values_list("members_count",
+                                                                                                flat=True)
     collection_income = sum(list(collection_income)) * 10
     income = GameSession.objects.filter(user=user).aggregate(points_sum=Sum('points'))
     income = income.get("points_sum") if income.get("points_sum") else 0
