@@ -12,6 +12,8 @@ djangorestframework-simplejwt = "*"
 djangorestframework-jwt-4 = "*"
 pyjwt = "==1.7.1"
 python-dotenv = "*"
+beautifulsoup4 = "*"
+requests = "*"
 
 [dev-packages]
 
