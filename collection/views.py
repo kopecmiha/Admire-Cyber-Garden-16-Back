@@ -96,9 +96,15 @@ class PointsForDepartment(APIView):
                 if department.id not in user.collected_departments:
                     user.collected_departments.append(department.id)
                     user.save()
-
                     return Response({"message": "Points received"}, status=status.HTTP_200_OK)
                 return Response({"message": "You already received "}, status=status.HTTP_403_FORBIDDEN)
             return Response({"message": "You don't have full department"}, status=status.HTTP_403_FORBIDDEN)
         except ObjectDoesNotExist:
             return Response({"message": "Department does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
+'''
+class RequestTrade(APIView):
+    permission_classes = (IsAuthenticated, )
+    
+    
+    def post(self, request):'''
