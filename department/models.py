@@ -7,10 +7,15 @@ User = get_user_model()
 
 class Department(models.Model):
     title = models.CharField(max_length=100)
-    chief = models.ForeignKey(to=User, on_delete=models.DO_NOTHING, null=True, blank=True)
-    head_department = models.ForeignKey(to="self", on_delete=models.DO_NOTHING, null=True, blank=True)
-    members = models.ManyToManyField(to=User, blank=True, related_name="department_members")
-
+    chief = models.ForeignKey(
+        to=User, on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    head_department = models.ForeignKey(
+        to="self", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+    members = models.ManyToManyField(
+        to=User, blank=True, related_name="department_members"
+    )
 
     def __str__(self):
         return self.title

@@ -16,33 +16,65 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Products',
+            name="Products",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('icons', models.FileField(blank=True, null=True, upload_to='icons')),
-                ('price', models.IntegerField(default=0)),
-                ('in_stock', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("icons", models.FileField(blank=True, null=True, upload_to="icons")),
+                ("price", models.IntegerField(default=0)),
+                ("in_stock", models.BooleanField(default=False)),
             ],
             options={
-                'verbose_name': 'Products',
-                'verbose_name_plural': 'Products',
-                'db_table': 'products',
+                "verbose_name": "Products",
+                "verbose_name_plural": "Products",
+                "db_table": "products",
             },
         ),
         migrations.CreateModel(
-            name='TradeStory',
+            name="TradeStory",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('price', models.IntegerField(default=0)),
-                ('date_time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('product', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='store.products')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("price", models.IntegerField(default=0)),
+                ("date_time", models.DateTimeField(default=django.utils.timezone.now)),
+                (
+                    "product",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="store.products",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'TradeStory',
-                'verbose_name_plural': 'TradeStory',
-                'db_table': 'trade_story',
+                "verbose_name": "TradeStory",
+                "verbose_name_plural": "TradeStory",
+                "db_table": "trade_story",
             },
         ),
     ]

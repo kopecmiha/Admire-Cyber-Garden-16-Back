@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('statistic', '0002_alter_gamesession_finished'),
+        ("statistic", "0002_alter_gamesession_finished"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='gamesession',
-            name='game_type',
-            field=models.CharField(choices=[('full-name', 'Full Name'), ('mapping', 'Mapping'), ('excluding', 'Excluding')], max_length=10, null=True),
+            model_name="gamesession",
+            name="game_type",
+            field=models.CharField(
+                choices=[
+                    ("full-name", "Full Name"),
+                    ("mapping", "Mapping"),
+                    ("excluding", "Excluding"),
+                ],
+                max_length=10,
+                null=True,
+            ),
         ),
     ]

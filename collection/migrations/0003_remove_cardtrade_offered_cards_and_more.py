@@ -7,26 +7,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('collection', '0002_cardtrade'),
+        ("collection", "0002_cardtrade"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='cardtrade',
-            name='offered_cards',
+            model_name="cardtrade",
+            name="offered_cards",
         ),
         migrations.RemoveField(
-            model_name='cardtrade',
-            name='requested_cards',
+            model_name="cardtrade",
+            name="requested_cards",
         ),
         migrations.AddField(
-            model_name='cardtrade',
-            name='user1_cards',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(), blank=True, default=list, null=True, size=None),
+            model_name="cardtrade",
+            name="user1_cards",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.IntegerField(),
+                blank=True,
+                default=list,
+                null=True,
+                size=None,
+            ),
         ),
         migrations.AddField(
-            model_name='cardtrade',
-            name='user2_cards',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(), blank=True, default=list, null=True, size=None),
+            model_name="cardtrade",
+            name="user2_cards",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.IntegerField(),
+                blank=True,
+                default=list,
+                null=True,
+                size=None,
+            ),
         ),
     ]

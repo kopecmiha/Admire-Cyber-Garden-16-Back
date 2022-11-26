@@ -6,18 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0004_alter_user_email'),
+        ("accounts", "0004_alter_user_email"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='grade',
-            field=models.CharField(choices=[('SENIOR', 'Senior'), ('MIDDLE', 'Middle'), ('JUNIOR', 'Junior')], default='JUNIOR', max_length=10, verbose_name='Grade'),
+            model_name="user",
+            name="grade",
+            field=models.CharField(
+                choices=[
+                    ("SENIOR", "Senior"),
+                    ("MIDDLE", "Middle"),
+                    ("JUNIOR", "Junior"),
+                ],
+                default="JUNIOR",
+                max_length=10,
+                verbose_name="Grade",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='specialization',
-            field=models.CharField(blank=True, max_length=256, null=True, verbose_name='Specialization'),
+            model_name="user",
+            name="specialization",
+            field=models.CharField(
+                blank=True, max_length=256, null=True, verbose_name="Specialization"
+            ),
         ),
     ]
