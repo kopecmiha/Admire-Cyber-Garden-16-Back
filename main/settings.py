@@ -85,8 +85,8 @@ WSGI_APPLICATION = 'main.wsgi.application'
 DATABASE_NAME = os.getenv("DATABASE_NAME", "hack16")
 DATABASE_HOST = os.getenv("DATABASE_HOST", "localhost")
 DATABASE_PORT = os.getenv("DATABASE_PORT", 5432)
-DATABASE_USER = os.getenv("DATABASE_USER", "postgre")
-DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "postgre")
+DATABASE_USER = os.getenv("DATABASE_USER", "postgres")
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "postgres")
 
 DATABASES = {
         "default": {
