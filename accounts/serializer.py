@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
             chief = User.objects.filter(pk=user_department.chief.id)
             if chief:
                 chief = chief.first()
-                chief_name = (chief.last_name or "") + (chief.first_name or "")
+                chief_name = (chief.last_name or "") + " " + (chief.first_name or "")
                 chief_dict = {"chief_id": chief.pk, "chief_name": chief_name}
             else:
                 chief_dict = {}

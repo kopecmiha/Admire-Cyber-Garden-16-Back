@@ -7,32 +7,22 @@ from department.models import Department
 class PlayCardSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = PlayCard
-        fields = "owner", "person"
+        fields = "owner", "person",
 
 
 class PlayCardViewSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = PlayCard
-        fields = "owner", "person"
+        fields = "owner", "person", "id"
         extra_kwargs = {'owner': {'read_only': True}, "person": {'read_only': True}}
 
     owner = UserSerializer()
     person = UserSerializer()
 
 
-class DepartmentCollectionSerializer(serializers.ModelSerializer):
+class UserDepartmentCollectionSerializer(serializers.ModelSerializer):
 
     top_deck = serializers.SerializerMethodField("resolver_top_deck")
-    full_deck = serializers.SerializerMethodField("resolve_full_deck")
-
-
-    def resolve_full_deck(self, department):
-        playcard_set = set(PlayCard.objects.filter(person__department_members=department, owner=self.context.get("user")).values_list("person_id", flat=True))
-        department_members = set(department.members.all())
-        if playcard_set == department_members:
-            return True
-        return False
-
 
     def resolver_top_deck(self, department):
         playcard_set = PlayCard.objects.filter(person__department_members=department, owner=self.context.get("user")).order_by("pk")
@@ -42,6 +32,22 @@ class DepartmentCollectionSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Department
-        fields = "title", "top_deck", "full_deck"
+        fields = "title", "top_deck", "id"
         extra_kwargs = {'title': {'read_only': True}, "top_deck": {'read_only': True}, "full_deck": {'read_only': True}}
 
+
+class DepartmentCollectionSerializer(UserDepartmentCollectionSerializer):
+
+    full_deck = serializers.SerializerMethodField("resolve_full_deck")
+
+    def resolve_full_deck(self, department):
+        playcard_set = set(PlayCard.objects.filter(person__department_members=department, owner=self.context.get("user")).values_list("person_id", flat=True))
+        department_members = set(department.members.values_list("id", flat=True))
+        if playcard_set == department_members:
+            return True
+        return False
+
+    class Meta(object):
+        model = Department
+        fields = "title", "top_deck", "full_deck", "id"
+        extra_kwargs = {'title': {'read_only': True}, "top_deck": {'read_only': True}, "full_deck": {'read_only': True}}
