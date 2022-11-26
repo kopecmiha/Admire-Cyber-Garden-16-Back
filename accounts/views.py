@@ -137,14 +137,15 @@ class GetListOfUsersFilter(APIView):
         page = int(params.get("page", 0))
         order = params.get("order", None)
         filter_fields = {}
-        exclude_fields = []
+        exclude_fields = [Q(**{"id__isnull": True})]
         department = params.get("department", None)
         if department:
             filter_fields.update({"department_members": department})
         not_empty = params.get("not_empty", None)
-        if not_empty == "true":
-            for item in allowed_fileds_to_filter:
-                if item != "patronymic":
+        if not_empty:
+            not_empty_fields = not_empty.split(",")
+            for item in not_empty_fields:
+                if item in allowed_fileds_to_filter:
                     exclude_fields.append(Q(**{item + "__isnull": True}))
                     exclude_fields.append(Q(**{item: ""}))
         for key, value in params.items():
