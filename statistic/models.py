@@ -1,4 +1,7 @@
+import datetime
+
 from django.db import models
+from django.utils import timezone
 
 from accounts.models import User
 
@@ -9,7 +12,7 @@ class GameSession(models.Model):
         mapping = "mapping"
 
     duration = models.BigIntegerField(default=0)
-    finished = models.DateTimeField(null=True)
+    finished = models.DateTimeField(default=timezone.now)
     points = models.IntegerField(default=0)
     game_type = models.CharField(
         max_length=10,

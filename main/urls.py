@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.contrib import admin
 from accounts import urls as account_urls
 from department import urls as department_urls
+from statistic import urls as statistic_urls
 
 
 urlpatterns = [
@@ -25,5 +26,6 @@ urlpatterns = [
         path('admin/', admin.site.urls),
         path('user/', include(account_urls)),
         path('department/', include(department_urls)),
+        path('statistic/', include(statistic_urls)),
     ]))
 ]
