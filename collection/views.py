@@ -7,7 +7,6 @@ from collection.models import PlayCard, CardTrade
 from department.models import Department
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 User = get_user_model()
 
 
@@ -131,12 +130,43 @@ class RequestTrade(APIView):
         return Response(response.data, status=status.HTTP_201_CREATED)
 
 
-class SeeTrades(APIView):
+class TradeOffers(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         user = request.user
-        trades = CardTrade.objects.filter(Q(user1=user) | Q(user2=user))
-        serializer = UserDepartmentCollectionSerializer(instance=Department.objects.all(), many=True, context={"user": user})
-        response = serializer.data
-        return Response(response, status=status.HTTP_200_OK)
+        trades = CardTrade.objects.filter(user2=user)
+        result_lust = []
+        for trade in trades:
+            data = {"id":trade.id, "user1": user, "user2": trade.user2, "user1_cards": PlayCard.objects.filter(id__in=trade.user1_cards), "user2_cards": PlayCard.objects.filter(id__in=trade.user2_cards)}
+            result_lust.append(data)
+        return Response(CardTradeViewSerializer(instance=result_lust, many=True).data, status=status.HTTP_200_OK)
+
+
+class TradeRequests(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        user = request.user
+        trades = CardTrade.objects.filter(user1=user)
+        result_lust = []
+        for trade in trades:
+            data = {"id":trade.id, "user1": user, "user2": trade.user2, "user1_cards": PlayCard.objects.filter(id__in=trade.user1_cards), "user2_cards": PlayCard.objects.filter(id__in=trade.user2_cards)}
+            result_lust.append(data)
+        return Response(CardTradeViewSerializer(instance=result_lust, many=True).data, status=status.HTTP_200_OK)
+
+
+class AcceptTrade(APIView):
+
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request):
+        user = request.user
+        trade_id = request.data.get("trade_id")
+        if trade := CardTrade.objects.filter(user2=user, pk=trade_id):
+            trade = trade.first()
+            PlayCard.objects.filter(pk__in=trade.user1_cards).update(**{"owner": trade.user2})
+            PlayCard.objects.filter(pk__in=trade.user2_cards).update(**{"owner": trade.user1})
+            trade.delete()
+            return Response({"message": "Successful trade"}, status=status.HTTP_200_OK)
+        return Response({"message": "No rights"}, status=status.HTTP_403_FORBIDDEN)
