@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User
+from accounts.utils import get_user_balance
 from statistic.models import GameSession
 from statistic.serializer import GameSessionSerializer
 
@@ -22,14 +23,9 @@ class ReplenishmentGameSession(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-class GetUserPoints(APIView):
+class GetUserBalance(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        user_id = request.query_params.get("user_uuid", None)
-        if user_id:
-            user_filter = {"user__username": user_id}
-        else:
-            user_filter = {"user": request.user}
-        score = GameSession.objects.filter(**user_filter).aggregate(points_sum=Sum('points'))
-        return Response(score, status=status.HTTP_200_OK)
+        balance = get_user_balance(request.user)
+        return Response({"balance": balance}, status=status.HTTP_200_OK)
