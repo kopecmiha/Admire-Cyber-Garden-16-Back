@@ -17,6 +17,7 @@ from rest_framework.views import APIView
 
 from accounts.models import User, UserRelationship
 from accounts.serializer import UserSerializer, UserCreateSerializer
+from department.models import Department
 
 allowed_fileds_to_order = [
     "email",
@@ -48,6 +49,11 @@ class CreateUser(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(password=make_password(request['password']))
         user = User.objects.get(email=serializer.data["email"])
+        stajeri_department = Department.objects.filter(title="Стажеры")
+        if stajeri_department:
+            stajeri_department = stajeri_department.first()
+            stajeri_department.members.add(user)
+            stajeri_department.save()
         response = UserSerializer(user, context={"is_auth": True}).data
         user_logged_in.send(sender=user.__class__,
                             request=request, user=user)
@@ -228,10 +234,25 @@ class RandomUser(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+class ChangePassword(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        user = request.user
+        old_password = request.data.get("old_password")
+        new_password = request.data.get("new_password")
+        hash_old_password = make_password(old_password)
+        if not old_password or not new_password:
+            return Response({"error": "Empty password"}, status=status.HTTP_403_FORBIDDEN)
+        if hash_old_password == user.password:
+            user.password = make_password(new_password)
+        else:
+            return Response({"error": "Not valid password"}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"message": "Successfully change password"}, status=status.HTTP_200_OK)
+
+
 class IsIntroduced(APIView):
-
     permission_classes = (AllowAny,)
-
 
     def get(self, request):
         params = request.query_params
