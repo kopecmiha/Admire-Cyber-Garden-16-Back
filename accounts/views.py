@@ -277,10 +277,12 @@ class TextSearch(APIView):
         start = page * limit_of_set
         last = start + limit_of_set
         filter_fields = []
+        query_filter = Q(id__gte=0)
         if search_text:
             for item in allowed_fileds_to_filter + ["fact1"]:
                 filter_fields.append(Q(**{item + "__icontains": search_text}))
-        search_results = User.objects.filter(reduce(or_, filter_fields))[start:last]
+                query_filter = reduce(or_, filter_fields)
+        search_results = User.objects.filter(query_filter)[start:last]
         result = UserSerializer(instance=search_results, many=True)
         return Response(result.data, status=status.HTTP_204_NO_CONTENT)
 
