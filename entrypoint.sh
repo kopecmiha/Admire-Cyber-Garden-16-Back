@@ -1,4 +1,4 @@
-#!/bin/sh
-python manage.py migrate
-python manage.py collectstatic --noinput
-gunicorn main.wsgi:application --bind 0.0.0.0:8000
+pipenv run python3.9 manage.py collectstatic  --noinput
+pipenv run python3.9 manage.py migrate
+
+pipenv run python3.9 manage.py runserver 0.0.0.0:8000
