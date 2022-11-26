@@ -19,6 +19,7 @@ from django.contrib import admin
 from accounts import urls as account_urls
 from department import urls as department_urls
 from statistic import urls as statistic_urls
+from collection import urls as collection_urls
 
 
 urlpatterns = [
@@ -27,5 +28,6 @@ urlpatterns = [
         path('user/', include(account_urls)),
         path('department/', include(department_urls)),
         path('statistic/', include(statistic_urls)),
+        path('collection/', include(collection_urls)),
     ]))
 ]
