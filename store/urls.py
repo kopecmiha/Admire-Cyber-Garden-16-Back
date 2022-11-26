@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import ReplenishmentProduct
+from .views import ReplenishmentProduct, DeleteProduct, GetProduct, GetProductList
 
 urlpatterns = [
-    path('add_game_session/', ReplenishmentGameSession.as_view()),
-    path('get_user_points/', GetUserPoints.as_view()),
+    path('replenishment_product/', ReplenishmentProduct.as_view()),
+    path('delete_product/', DeleteProduct.as_view()),
+    path('get_product/', GetProduct.as_view()),
+    path('get_products_list/', GetProductList.as_view()),
 ]

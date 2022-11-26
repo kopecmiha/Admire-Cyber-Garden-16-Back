@@ -10,6 +10,7 @@ class GameSession(models.Model):
     class GamesTypeEnum(models.TextChoices):
         full_name = "full-name"
         mapping = "mapping"
+        excluding = "excluding"
 
     duration = models.BigIntegerField(default=0)
     finished = models.DateTimeField(default=timezone.now)

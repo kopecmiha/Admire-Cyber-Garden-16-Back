@@ -5,7 +5,7 @@ from accounts.models import User
 
 
 class Products(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default="")
     icons = models.FileField(upload_to="icons", null=True, blank=True)
     price = models.IntegerField(null=False, default=0)
     in_stock = models.BooleanField(null=False, default=False)
