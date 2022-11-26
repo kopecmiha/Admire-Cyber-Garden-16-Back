@@ -14,6 +14,8 @@ class CreateDepartment(APIView):
 
     def post(self, request):
         request = request.data
+        request["chief"] = User.objects.get(username=request.pop("chief")).id
+        request["members"] = list(User.objects.filter(username__in=request.pop("members")).values_list("id", flat=True))
         serializer = DepartmentSerializer(data=request)
         serializer.is_valid(raise_exception=True)
         serializer.save()
