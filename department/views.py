@@ -6,6 +6,9 @@ from department.serializer import DepartmentSerializer, DepartmentViewSerializer
 from department.models import Department
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
+
+import random
 User = get_user_model()
 
 
@@ -72,3 +75,37 @@ class GetDepartment(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
+class SetDepartment(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request):
+        department_dict = {"Веб разработка":  Department.objects.create(title="Веб разработка"),
+                           "Мобильная разработка": Department.objects.create(title="Мобильная разработка"),
+                           "QA":Department.objects.create(title="QA"),
+                           "Диджитал контент":Department.objects.create(title="Диджитал контент"),
+                           "HR":Department.objects.create(title="HR"),
+                           "Коммерческий отдел":Department.objects.create(title="Коммерческий отдел")}
+
+        users = User.objects.all()
+        for user in users:
+            if "-разработчик" in user.specialization.lower() or "веб-аналитик" in user.specialization.lower():
+                department_dict["Веб разработка"].members.add(user)
+            elif "мобильный разработчик" in user.specialization.lower():
+                department_dict["Мобильная разработка"].members.add(user)
+            elif "бухгалтер" in user.specialization.lower():
+                department_dict["Коммерческий отдел"].members.add(user)
+            elif user.specialization.lower() in ["дизайнер", "маркетолог", "Контент-менеджер"]:
+                department_dict["Диджитал контент"].members.add(user)
+            elif user.specialization.lower() in ["инженер техподдержки", "тестировщик", ]:
+                department_dict["QA"].members.add(user)
+            elif user.specialization.lower() in ["инженер техподдержки", "тестировщик", "системный администратор"]:
+                department_dict["QA"].members.add(user)
+            elif user.specialization.lower() == "менеджер по персоналу":
+                department_dict["HR"].members.add(user)
+            elif user.specialization.lower() in ["руководитель проектов", "системный аналитик"] :
+                random.choice([department_dict["Веб разработка"], department_dict["Мобильная разработка"]]).members.add(user)
+        for department in department_dict.values():
+            department.chief = random.choice(department.members.filter(Q(grade="SENIOR") | Q(grade="NULL")))
+            department.save()
+
+        return Response("ok", status=status.HTTP_200_OK)
