@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -31,6 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     fact1 = models.TextField(null=True, blank=True)
     fact2 = models.TextField(null=True, blank=True)
     fact3 = models.TextField(null=True, blank=True)
+    collected_departments = ArrayField(models.IntegerField(), default=list)
     objects = UserManager()
 
     USERNAME_FIELD = "username"

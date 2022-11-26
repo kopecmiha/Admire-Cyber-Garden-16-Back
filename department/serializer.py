@@ -10,11 +10,19 @@ class DepartmentSerializer(serializers.ModelSerializer):
 
 
 class DepartmentViewSerializer(serializers.ModelSerializer):
+
+    members = serializers.SerializerMethodField("resolve_members")
+
+    def resolve_members(self, department):
+        if self.context.get("resolve_members"):
+            return UserSerializer(instance=department.members, many=True).data
+        return []
+
+
     class Meta(object):
         model = Department
         fields = "title", "chief", "head_department", "members"
         extra_kwargs = {'chief': {'read_only': True}}
 
     chief = UserSerializer()
-    members = UserSerializer(many=True)
 
