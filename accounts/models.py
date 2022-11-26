@@ -33,6 +33,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     fact2 = models.TextField(null=True, blank=True)
     fact3 = models.TextField(null=True, blank=True)
     collected_departments = ArrayField(models.IntegerField(), default=list)
+    city = models.CharField(_("City"), max_length=30, null=True, blank=True)
+    online = models.BooleanField(_("Online"), null=True, default=False)
     objects = UserManager()
 
     USERNAME_FIELD = "username"

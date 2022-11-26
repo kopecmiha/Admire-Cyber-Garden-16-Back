@@ -51,6 +51,8 @@ class UserSerializer(serializers.ModelSerializer):
                   "fact1",
                   "fact2",
                   "fact3",
+                  "city",
+                  "online"
                   ]
         extra_kwargs = {"uuid": {'read_only': True}, "token": {'read_only': True}, "department": {'read_only': True}}
 
