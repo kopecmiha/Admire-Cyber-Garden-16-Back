@@ -132,10 +132,13 @@ class GetListOfUsersFilter(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, **kwargs):
+        user = request.user
         params = request.query_params
         limit_of_set = int(params.get("limit_of_set", 10))
         page = int(params.get("page", 0))
         order = params.get("order", None)
+        introduced = params.get("introduced", False)
+        not_introduced = params.get("not_introduced", False)
         filter_fields = {}
         exclude_fields = [Q(**{"id__isnull": True})]
         department = params.get("department", None)
@@ -158,7 +161,16 @@ class GetListOfUsersFilter(APIView):
             order = "?"
         start = page * limit_of_set
         last = start + limit_of_set
-        users = User.objects.filter(**filter_fields).exclude(reduce(or_, exclude_fields)).order_by(order)[start:last]
+        users = User.objects.filter(**filter_fields).exclude(reduce(or_, exclude_fields))
+        if introduced:
+            introduced = UserRelationship.objects.filter(user1=user)
+            introduced_values_list = list(introduced.values_list("user2_id", flat=True))
+            users = users.filter(pk__in=introduced_values_list)
+        if not_introduced:
+            introduced = UserRelationship.objects.filter(user1=user)
+            introduced_values_list = list(introduced.values_list("user2_id", flat=True))
+            users = users.exclude(pk__in=introduced_values_list)
+        users = users.order_by(order)[start:last]
         serializer = UserSerializer(users, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
