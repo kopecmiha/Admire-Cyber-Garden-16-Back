@@ -317,7 +317,7 @@ class TextSearch(APIView):
                 query_filter = reduce(or_, filter_fields)
         search_results = User.objects.filter(query_filter)[start:last]
         result = UserSerializer(instance=search_results, many=True)
-        return Response(result.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(result.data, status=status.HTTP_200_OK)
 
 
 class RelatedCount(APIView):
