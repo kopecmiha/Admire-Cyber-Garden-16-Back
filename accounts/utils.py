@@ -13,9 +13,10 @@ def get_jwt_token(user):
     return token
 
 def get_user_balance(user):
+    collection_income = len(user.collected_departments) * 100
     income = GameSession.objects.filter(user=user).aggregate(points_sum=Sum('points'))
     income = income.get("points_sum") if income.get("points_sum") else 0
     expences = TradeStory.objects.filter(user=user).aggregate(points_sum=Sum('price'))
     expences = expences.get("points_sum") if expences.get("points_sum") else 0
-    balance = income - expences
+    balance = collection_income + income - expences
     return balance
