@@ -141,8 +141,9 @@ class GetListOfUsersFilter(APIView):
         not_empty = params.get("not_empty", None)
         if not_empty == "true":
             for item in allowed_fileds_to_filter:
-                exclude_fields.append(Q(**{item + "__isnull": True}))
-                exclude_fields.append(Q(**{item: ""}))
+                if item != "patronymic":
+                    exclude_fields.append(Q(**{item + "__isnull": True}))
+                    exclude_fields.append(Q(**{item: ""}))
         for key, value in params.items():
             if key in allowed_fileds_to_filter:
                 if isinstance(value, (str, int)):

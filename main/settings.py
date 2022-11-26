@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     "department",
+    "statistic",
     "collection"
 ]
 
