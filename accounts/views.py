@@ -151,6 +151,8 @@ class GetListOfUsersFilter(APIView):
                 if item in allowed_fileds_to_filter or item == "avatar":
                     exclude_fields.append(Q(**{item + "__isnull": True}))
                     exclude_fields.append(Q(**{item: ""}))
+                elif item == "department":
+                    exclude_fields.append(Q(**{"department_members": None}))
         for key, value in params.items():
             if key in allowed_fileds_to_filter:
                 if isinstance(value, (str, int)):
