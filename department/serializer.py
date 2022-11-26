@@ -21,8 +21,8 @@ class DepartmentViewSerializer(serializers.ModelSerializer):
 
     class Meta(object):
         model = Department
-        fields = "title", "chief", "head_department", "members"
-        extra_kwargs = {'chief': {'read_only': True}}
+        fields = "id", "title", "chief", "head_department", "members"
+        extra_kwargs = {"id": {'read_only': True}, 'chief': {'read_only': True}}
 
     chief = UserSerializer()
 
