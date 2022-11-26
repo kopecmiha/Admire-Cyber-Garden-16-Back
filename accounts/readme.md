@@ -252,3 +252,144 @@ url - /change_password/
 }
 ```
 ***
+
+##### Текстовый поиск
+Метод Get  
+url - /search_text/
+query параметры:  
+search_text - текст который проверяется на вхождение
+page - страница
+limit_of_set - количество объектов на странице
+***
+Запрос
+```
+http://127.0.0.1:8000/api/user/text_search/?search_text=али&page=0&limit_of_set=5
+```
+
+Ответ
+```json
+[
+    {
+        "id": 29,
+        "first_name": "Милана",
+        "last_name": "Васильева",
+        "patronymic": "Дмитриевна",
+        "email": "test6@test.com",
+        "token": "",
+        "avatar": "/media/avatars/e5b8ffee-37b1-473a-805c-8e18101f4f4a_7aR2E2p.jpg",
+        "grade": "MIDDLE",
+        "specialization": "Веб-аналитик",
+        "date_birthday": "1994-03-17",
+        "department": {
+            "id": 8,
+            "title": "Веб разработка",
+            "chief_id": 26,
+            "chief_name": "Александров Артём"
+        },
+        "uuid": "ee3c5cb9-f043-4f4c-96aa-598597cfd5f9",
+        "fact1": "Спортсменка",
+        "fact2": "IQ выше 200",
+        "fact3": "Съедает 45 кг шоколада в год",
+        "city": "Ростов-на-Дону",
+        "online": false
+    },
+    {
+        "id": 30,
+        "first_name": "Алиса",
+        "last_name": "Губанова",
+        "patronymic": null,
+        "email": "test7@test.com",
+        "token": "",
+        "avatar": "/media/avatars/e4e8114a-2cb5-4d38-aa9e-9eecb2436d7b_e9JCy0x.jpg",
+        "grade": "SENIOR",
+        "specialization": "Бекенд-разработчик",
+        "date_birthday": "2002-11-18",
+        "department": {
+            "id": 8,
+            "title": "Веб разработка",
+            "chief_id": 26,
+            "chief_name": "Александров Артём"
+        },
+        "uuid": "2d14ffc8-153a-433d-84b8-523d7ab7f43b",
+        "fact1": "Работала в почтовом отделении",
+        "fact2": "Отпечатки ее пальцев похожи на отпечатки пальцев Коалы",
+        "fact3": "Фанатка Арндольда Шварцнегера",
+        "city": "Армавир",
+        "online": true
+    },
+    {
+        "id": 33,
+        "first_name": "Алиса",
+        "last_name": "Егорова",
+        "patronymic": "Дамировна",
+        "email": "test10@test.com",
+        "token": "",
+        "avatar": "/media/avatars/b262eb1b-5775-4a6f-9002-2e5a552871fd_fCle0IN.jpg",
+        "grade": "MIDDLE",
+        "specialization": "Дизайнер",
+        "date_birthday": "1989-01-05",
+        "department": {
+            "id": 11,
+            "title": "Диджитал контент",
+            "chief_id": 39,
+            "chief_name": "Котов Александр"
+        },
+        "uuid": "ed1bf3b3-b66b-4182-8d99-d417cfb25d63",
+        "fact1": "Хочет быть космонавтом и брать с собой в космос оружие",
+        "fact2": "Верит в НЛО",
+        "fact3": "Дотягивается языком до локтя",
+        "city": "Москва",
+        "online": true
+    },
+    {
+        "id": 53,
+        "first_name": "Аглая",
+        "last_name": "Романова",
+        "patronymic": "Тимофеевна",
+        "email": "test30@test.com",
+        "token": "",
+        "avatar": "/media/avatars/27c9e143-7b13-4928-a4ab-10107e00ae1e_t3vytEl.jpg",
+        "grade": "MIDDLE",
+        "specialization": "Системный аналитик",
+        "date_birthday": "1994-02-18",
+        "department": {
+            "id": 8,
+            "title": "Веб разработка",
+            "chief_id": 26,
+            "chief_name": "Александров Артём"
+        },
+        "uuid": "8a7f199c-829a-4309-9ac2-eb7f9fae33a3",
+        "fact1": "Знает все созвездия",
+        "fact2": "Не любит варенный лук",
+        "fact3": "прекрасно жарит шашлык",
+        "city": "Ставрополь",
+        "online": true
+    },
+    {
+        "id": 52,
+        "first_name": "Кристина",
+        "last_name": "Попова",
+        "patronymic": "Давидовна",
+        "email": "test29@test.com",
+        "token": "",
+        "avatar": "/media/avatars/31c40e92-6fe9-478c-a154-8238f23c7d12_qTWiYlp.jpg",
+        "grade": "JUNIOR",
+        "specialization": "Системный аналитик",
+        "date_birthday": "1994-05-19",
+        "department": {
+            "id": 8,
+            "title": "Веб разработка",
+            "chief_id": 26,
+            "chief_name": "Александров Артём"
+        },
+        "uuid": "75fecd73-24f4-4a67-9d02-8bfbc989b03f",
+        "fact1": "Любит клубничное мороженное",
+        "fact2": "Фанат ММА боев",
+        "fact3": "Выросла с корейцами в Чечне",
+        "city": "Таганрог",
+        "online": false
+    }
+]
+```
+
+***

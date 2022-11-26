@@ -263,3 +263,22 @@ class IsIntroduced(APIView):
         if UserRelationship.objects.filter(user1=user1, user2=user2).exists():
             return Response({"is_introduced": True}, status=status.HTTP_200_OK)
         return Response({"is_introduced": False}, status=status.HTTP_204_NO_CONTENT)
+
+
+class TextSearch(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        params = request.query_params
+        search_text = params.get("search_text")
+        page = int(params.get("page", 0))
+        limit_of_set = int(params.get("limit_of_set", 10))
+        start = page * limit_of_set
+        last = start + limit_of_set
+        filter_fields = []
+        if search_text:
+            for item in allowed_fileds_to_filter + ["fact1"]:
+                filter_fields.append(Q(**{item + "__icontains": search_text}))
+        search_results = User.objects.filter(reduce(or_, filter_fields))[start:last]
+        result = UserSerializer(instance=search_results, many=True)
+        return Response(result.data, status=status.HTTP_204_NO_CONTENT)
