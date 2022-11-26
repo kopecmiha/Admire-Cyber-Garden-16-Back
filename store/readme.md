@@ -72,3 +72,39 @@ url - /api/store/buy/
 }
 ```
 ***
+
+##### Получение истории покупок
+Метод GET  
+Требует авторизации  
+url - /store/trading_history/
+***
+Ответ
+```json
+[
+    {
+        "id": 1,
+        "product": {
+            "id": 1,
+            "title": "Майка2",
+            "icons": "/media/%5B%3CTemporaryUploadedFile%3A%20P1010001.JPG%20(image/jpeg)%3E%5D",
+            "price": 1000,
+            "in_stock": true
+        },
+        "price": 1000,
+        "date_time": "2022-11-26T10:06:17.450063Z"
+    },
+    {
+        "id": 2,
+        "product": {
+            "id": 1,
+            "title": "Майка2",
+            "icons": "/media/%5B%3CTemporaryUploadedFile%3A%20P1010001.JPG%20(image/jpeg)%3E%5D",
+            "price": 1000,
+            "in_stock": true
+        },
+        "price": 1000,
+        "date_time": "2022-11-26T10:07:27.475665Z"
+    }
+]
+```
+***
