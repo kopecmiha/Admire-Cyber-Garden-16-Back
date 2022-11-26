@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PlayCard
+from .models import PlayCard, CardTrade
 from accounts.serializer import UserSerializer
 from department.models import Department
 
@@ -51,3 +51,21 @@ class DepartmentCollectionSerializer(UserDepartmentCollectionSerializer):
         model = Department
         fields = "title", "top_deck", "full_deck", "id"
         extra_kwargs = {'title': {'read_only': True}, "top_deck": {'read_only': True}, "full_deck": {'read_only': True}}
+
+
+class CardTradeSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = CardTrade
+        fields = "id", "user1", "user2", "user1_cards", "user2_cards"
+
+
+class CardTradeViewSerializer(serializers.ModelSerializer):
+    class Meta(object):
+        model = CardTrade
+        fields = "id", "user1", "user2", "user1_cards", "user2_cards"
+        extra_kwargs = {'user1': {'read_only': True}, "user2": {'read_only': True}, "user1_cards": {'read_only': True}, "user2_cards": {'read_only': True}}
+
+    user1 = UserSerializer()
+    user2 = UserSerializer()
+    user1_cards = PlayCardViewSerializer(many=True)
+    user2_cards = PlayCardViewSerializer(many=True)
