@@ -77,32 +77,6 @@ class UserProfile(APIView):
             return Response({"message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class Parse(APIView):
-    permission_classes = (AllowAny,)
-
-    def get(self, request):
-        city_list_office = ["Ростов-на-Дону", "Таганрог"]
-        city_list_online = ["Новороссийск", "Краснодар", "Воронеж", "Ставрополь", "Байтаск", "Армавир", "Санкт-Петребург", "Москва"]
-        users = User.objects.all()
-        for user in users:
-            random_city = random.randint(0, 100)
-            if random_city <= 40:
-                user.city = random.choice(city_list_office)
-                user.online = False
-                user.save()
-            else:
-                random_city_2 = random.randint(0, 100)
-                if random_city_2 <= 10:
-                    user.city = random.choice(city_list_office)
-                    user.online = True
-                    user.save()
-                else:
-                    user.city = random.choice(city_list_online)
-                    user.online = True
-                    user.save()
-        return Response("ok", status=status.HTTP_200_OK)
-
-
 class GetListOfUsers(APIView):
     permission_classes = (IsAuthenticated,)
 

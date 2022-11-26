@@ -1,5 +1,4 @@
-from django.db.models import Sum, IntegerField, Count
-from django.db.models.functions import Coalesce
+from django.db.models import Sum, Count
 from rest_framework_jwt.serializers import jwt_payload_handler
 import jwt
 

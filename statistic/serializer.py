@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import GameSession
-from accounts.serializer import UserSerializer
 
 
 class GameSessionSerializer(serializers.ModelSerializer):
