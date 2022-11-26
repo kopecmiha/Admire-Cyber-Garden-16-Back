@@ -34,14 +34,12 @@ url - /add_game_session/
 ##### Запрос очков пользователя
 Метод GET  
 Требует авторизации  
-url - /get_user_points/
-возможно запросить очки другого пользователя get параметр user_uuid
-http://127.0.0.1:8000/api/statistic/get_user_points/?user_uuid=750de923-48ee-46ff-b6ab-c54b09824d79
+url - /get_user_balance/
 ***
 Ответ
 ```json
 {
-    "points_sum": 10
+    "balance": 10
 }
 ```
 Ошибка при неавторизованном запросе
