@@ -36,6 +36,7 @@ allowed_fileds_to_filter = [
     "patronymic",
     "grade",
     "specialization",
+    "city",
 ]
 
 
