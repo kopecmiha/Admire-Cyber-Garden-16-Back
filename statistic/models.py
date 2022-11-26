@@ -11,6 +11,7 @@ class GameSession(models.Model):
         full_name = "full-name"
         mapping = "mapping"
         excluding = "excluding"
+        swiper = "swiper"
 
     duration = models.BigIntegerField(default=0)
     finished = models.DateTimeField(default=timezone.now)
