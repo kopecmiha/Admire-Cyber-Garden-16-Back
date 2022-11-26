@@ -163,10 +163,13 @@ class AcceptTrade(APIView):
     def post(self, request):
         user = request.user
         trade_id = request.data.get("trade_id")
+        accept = request.data.get("accept")
         if trade := CardTrade.objects.filter(user2=user, pk=trade_id):
             trade = trade.first()
-            PlayCard.objects.filter(pk__in=trade.user1_cards).update(**{"owner": trade.user2})
-            PlayCard.objects.filter(pk__in=trade.user2_cards).update(**{"owner": trade.user1})
+            if accept:
+                PlayCard.objects.filter(pk__in=trade.user1_cards).update(**{"owner": trade.user2})
+                PlayCard.objects.filter(pk__in=trade.user2_cards).update(**{"owner": trade.user1})
+                return Response({"message": "Successful trade"}, status=status.HTTP_200_OK)
             trade.delete()
-            return Response({"message": "Successful trade"}, status=status.HTTP_200_OK)
+            return Response({"message": "Trade rejected"}, status=status.HTTP_200_OK)
         return Response({"message": "No rights"}, status=status.HTTP_403_FORBIDDEN)
