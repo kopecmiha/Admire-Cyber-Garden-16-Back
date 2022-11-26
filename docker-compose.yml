@@ -16,12 +16,12 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      args:
-        DATABASE_NAME: ${DATABASE_NAME}
-        DATABASE_USER: ${DATABASE_USER}
-        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-        DATABASE_HOST: ${DATABASE_HOST}
-        DATABASE_PORT: ${DATABASE_PORT}
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
     command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
     expose:
       - 8000
