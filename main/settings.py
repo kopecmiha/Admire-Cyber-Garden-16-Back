@@ -11,11 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import datetime
 from pathlib import Path
-from dotenv import load_dotenv
 import os
-
-
-#load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,8 +82,8 @@ WSGI_APPLICATION = 'main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASE_NAME = os.getenv("DATABASE_NAME", "postgres")
-DATABASE_HOST = os.getenv("DATABASE_HOST", "db")
+DATABASE_NAME = os.getenv("DATABASE_NAME", "hack16")
+DATABASE_HOST = os.getenv("DATABASE_HOST", "localhost")
 DATABASE_PORT = os.getenv("DATABASE_PORT", 5432)
 DATABASE_USER = os.getenv("DATABASE_USER", "postgres")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "postgres")
