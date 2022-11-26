@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SpawnPlayCard, PlayCardsView, UserPlayCardsView, DepartmentPlayCardView, UserDepartmentPlayCardView, PointsForDepartment, RequestTrade
+from .views import SpawnPlayCard, PlayCardsView, UserPlayCardsView, DepartmentPlayCardView, UserDepartmentPlayCardView, PointsForDepartment, RequestTrade, TradeOffers, TradeRequests, AcceptTrade
 
 urlpatterns = [
     path('spawn_playcard/', SpawnPlayCard.as_view()),
@@ -9,4 +9,7 @@ urlpatterns = [
     path('user_play_card_departments/<str:user_id>/', UserDepartmentPlayCardView.as_view()),
     path('points_for_department/', PointsForDepartment.as_view()),
     path('request_trade/', RequestTrade.as_view()),
+    path('trade_offers/', TradeOffers.as_view()),
+    path('trade_requests/', TradeRequests.as_view()),
+    path('accept_trade/', AcceptTrade.as_view()),
 ]
