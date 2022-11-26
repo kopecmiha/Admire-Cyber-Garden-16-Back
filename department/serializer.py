@@ -6,7 +6,7 @@ from accounts.serializer import UserSerializer
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = Department
-        fields = "title", "chief", "head_department", "members"
+        fields = "id", "title", "chief", "head_department", "members"
 
 
 class DepartmentViewSerializer(serializers.ModelSerializer):
