@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateUser, GetUserProfile, ObtainToken, UpdateUserProfile, Parse, GetListOfUsers, \
+from .views import CreateUser, GetUserProfile, ObtainToken, UpdateUserProfile, GetListOfUsers, \
     GetListOfUsersFilter, UserProfile, IntroduceView, RandomUser, IsIntroduced
 
 urlpatterns = [
@@ -13,5 +13,4 @@ urlpatterns = [
     path('introduce_users/', IntroduceView.as_view(),),
     path('is_introduced/', IsIntroduced.as_view(),),
     path('random_user/', RandomUser.as_view(),),
-    path('parse/', Parse.as_view()),
 ]
