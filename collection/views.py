@@ -246,6 +246,7 @@ class AcceptTrade(APIView):
                 PlayCard.objects.filter(pk__in=trade.user2_cards).update(
                     **{"owner": trade.user1}
                 )
+                trade.delete()
                 return Response(
                     {"message": "Successful trade"}, status=status.HTTP_200_OK
                 )
