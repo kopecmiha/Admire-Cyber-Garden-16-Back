@@ -138,6 +138,9 @@ class GetListOfUsersFilter(APIView):
         order = params.get("order", None)
         filter_fields = {}
         exclude_fields = []
+        department = params.get("department", None)
+        if department:
+            filter_fields.update({"department_members": department})
         not_empty = params.get("not_empty", None)
         if not_empty == "true":
             for item in allowed_fileds_to_filter:
