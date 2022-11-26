@@ -6,18 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0013_user_collected_departments'),
+        ("accounts", "0013_user_collected_departments"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='city',
-            field=models.CharField(blank=True, max_length=30, null=True, verbose_name='City'),
+            model_name="user",
+            name="city",
+            field=models.CharField(
+                blank=True, max_length=30, null=True, verbose_name="City"
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='online',
-            field=models.BooleanField(default=False, null=True, verbose_name='Online'),
+            model_name="user",
+            name="online",
+            field=models.BooleanField(default=False, null=True, verbose_name="Online"),
         ),
     ]

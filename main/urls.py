@@ -24,13 +24,18 @@ from collection import urls as collection_urls
 from store import urls as store_urls
 
 urlpatterns = [
-    path('api/', include([
-        path('admin/', admin.site.urls),
-        path('user/', include(account_urls)),
-        path('department/', include(department_urls)),
-        path('statistic/', include(statistic_urls)),
-        path('collection/', include(collection_urls)),
-        path('store/', include(store_urls)),
-    ]))
+    path(
+        "api/",
+        include(
+            [
+                path("admin/", admin.site.urls),
+                path("user/", include(account_urls)),
+                path("department/", include(department_urls)),
+                path("statistic/", include(statistic_urls)),
+                path("collection/", include(collection_urls)),
+                path("store/", include(store_urls)),
+            ]
+        ),
+    )
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

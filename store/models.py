@@ -21,7 +21,9 @@ class Products(models.Model):
 
 class TradeStory(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, blank=True)
-    product = models.ForeignKey(to=Products, on_delete=models.SET_NULL, null=True, blank=True)
+    product = models.ForeignKey(
+        to=Products, on_delete=models.SET_NULL, null=True, blank=True
+    )
     price = models.IntegerField(null=False, default=0)
     date_time = models.DateTimeField(default=timezone.now)
 

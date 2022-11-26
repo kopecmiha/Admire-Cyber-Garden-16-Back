@@ -80,10 +80,15 @@ class Buy(APIView):
         product = Products.objects.filter(Q(id=product_id) & Q(price__lte=balance))
         if product:
             product = product.first()
-            new_buy = TradeStory.objects.create(user=request.user, product=product, price=product.price)
+            new_buy = TradeStory.objects.create(
+                user=request.user, product=product, price=product.price
+            )
             response = TradeStorySerializer(instance=new_buy).data
         else:
-            return Response({"error": "You can't buy this product"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "You can't buy this product"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return Response(response, status=status.HTTP_200_OK)
 
 

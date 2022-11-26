@@ -15,9 +15,7 @@ class GameSession(models.Model):
     finished = models.DateTimeField(default=timezone.now)
     points = models.IntegerField(default=0)
     game_type = models.CharField(
-        max_length=10,
-        choices=GamesTypeEnum.choices,
-        null=True
+        max_length=10, choices=GamesTypeEnum.choices, null=True
     )
     try_count = models.IntegerField(default=0)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True, blank=True)

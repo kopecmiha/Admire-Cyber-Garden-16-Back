@@ -26,7 +26,7 @@ allowed_fileds_to_order = [
     "patronymic",
     "grade",
     "specialization",
-    "random"
+    "random",
 ]
 
 allowed_fileds_to_filter = [
@@ -48,7 +48,7 @@ class CreateUser(APIView):
         request["username"] = uuid.uuid4()
         serializer = UserCreateSerializer(data=request)
         serializer.is_valid(raise_exception=True)
-        serializer.save(password=make_password(request['password']))
+        serializer.save(password=make_password(request["password"]))
         user = User.objects.get(email=serializer.data["email"])
         stajeri_department = Department.objects.filter(title="Стажеры")
         if stajeri_department:
@@ -56,8 +56,7 @@ class CreateUser(APIView):
             stajeri_department.members.add(user)
             stajeri_department.save()
         response = UserSerializer(user, context={"is_auth": True}).data
-        user_logged_in.send(sender=user.__class__,
-                            request=request, user=user)
+        user_logged_in.send(sender=user.__class__, request=request, user=user)
         return Response(response, status=status.HTTP_201_CREATED)
 
 
@@ -81,7 +80,9 @@ class UserProfile(APIView):
             response = serializer.data
             return Response(response, status=status.HTTP_200_OK)
         except ObjectDoesNotExist:
-            return Response({"message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class GetListOfUsers(APIView):
@@ -129,7 +130,9 @@ class GetListOfUsersFilter(APIView):
             order = "?"
         start = page * limit_of_set
         last = start + limit_of_set
-        users = User.objects.filter(**filter_fields).exclude(reduce(or_, exclude_fields))
+        users = User.objects.filter(**filter_fields).exclude(
+            reduce(or_, exclude_fields)
+        )
         if introduced:
             introduced = UserRelationship.objects.filter(user1=user)
             introduced_values_list = list(introduced.values_list("user2_id", flat=True))
@@ -152,9 +155,7 @@ class UpdateUserProfile(APIView):
         serializer_data = request.data
         if avatar:
             serializer_data.update({"avatar": avatar})
-        serializer = UserSerializer(
-            request.user, data=serializer_data, partial=True
-        )
+        serializer = UserSerializer(request.user, data=serializer_data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         response = serializer.data
@@ -175,8 +176,12 @@ class IntroduceView(APIView):
             )
             if result:
                 return Response(status=status.HTTP_200_OK)
-            return Response({"message": "Already introduced"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({"message": "User does not  exist"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "Already introduced"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(
+            {"message": "User does not  exist"}, status=status.HTTP_404_NOT_FOUND
+        )
 
 
 class ObtainToken(APIView):
@@ -184,27 +189,35 @@ class ObtainToken(APIView):
 
     def post(self, request):
         try:
-            login = request.data['login']
-            password = request.data['password']
+            login = request.data["login"]
+            password = request.data["password"]
             try:
                 user = User.objects.get(email=login)
             except User.DoesNotExist:
-                return Response({"error": 'Please provide right login and a password'},
-                                status=status.HTTP_401_UNAUTHORIZED)
+                return Response(
+                    {"error": "Please provide right login and a password"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
             if not user.check_password(password) or not user.is_active:
-                return Response({"error": 'Please provide right login and a password'},
-                                status=status.HTTP_401_UNAUTHORIZED)
+                return Response(
+                    {"error": "Please provide right login and a password"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
             if user:
                 try:
                     response = UserSerializer(user, context={"is_auth": True}).data
-                    user_logged_in.send(sender=user.__class__,
-                                        request=request, user=user)
+                    user_logged_in.send(
+                        sender=user.__class__, request=request, user=user
+                    )
                     return Response(response, status=status.HTTP_200_OK)
 
                 except Exception as e:
                     raise e
         except (KeyError, ObjectDoesNotExist):
-            return Response({"error": 'Please provide right login and a password'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"error": "Please provide right login and a password"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
 
 class RandomUser(APIView):
@@ -215,21 +228,35 @@ class RandomUser(APIView):
         params = request.query_params
         limit_of_set = int(params.get("limit_of_set", 10))
         uuid_to_exclude = params.get("uuid_to_exclude", "").split(",")
-        uuid_to_exclude = list(User.objects.filter(username__in=uuid_to_exclude).values_list("id", flat=True))
+        uuid_to_exclude = list(
+            User.objects.filter(username__in=uuid_to_exclude).values_list(
+                "id", flat=True
+            )
+        )
         introduced = UserRelationship.objects.filter(user1=requester)
         introduced_values_list = list(introduced.values_list("user2_id", flat=True))
         not_introduced = User.objects.exclude(
-            pk__in=introduced_values_list + [requester.id] + uuid_to_exclude).order_by("?")
+            pk__in=introduced_values_list + [requester.id] + uuid_to_exclude
+        ).order_by("?")
         if not_introduced:
             result_user = not_introduced[:limit_of_set]
         else:
             introduced.filter(introduced=False).delete()
-            introduced = list(UserRelationship.objects.filter(user1=requester).values_list("user2_id", flat=True))
-            not_introduced = User.objects.exclude(pk__in=introduced + [requester.id] + uuid_to_exclude).order_by("?")
+            introduced = list(
+                UserRelationship.objects.filter(user1=requester).values_list(
+                    "user2_id", flat=True
+                )
+            )
+            not_introduced = User.objects.exclude(
+                pk__in=introduced + [requester.id] + uuid_to_exclude
+            ).order_by("?")
             if not_introduced:
                 result_user = not_introduced[:limit_of_set]
             else:
-                return Response({"message": "You're already introduced to everyone"}, status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    {"message": "You're already introduced to everyone"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
         serializer = UserSerializer(instance=result_user, many=True)
         response = serializer.data
         return Response(response, status=status.HTTP_200_OK)
@@ -243,13 +270,19 @@ class ChangePassword(APIView):
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
         if not old_password or not new_password:
-            return Response({"error": "Empty password"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "Empty password"}, status=status.HTTP_403_FORBIDDEN
+            )
         if user.check_password(old_password):
             user.password = make_password(new_password)
             user.save()
         else:
-            return Response({"error": "Not valid password"}, status=status.HTTP_403_FORBIDDEN)
-        return Response({"message": "Successfully change password"}, status=status.HTTP_200_OK)
+            return Response(
+                {"error": "Not valid password"}, status=status.HTTP_403_FORBIDDEN
+            )
+        return Response(
+            {"message": "Successfully change password"}, status=status.HTTP_200_OK
+        )
 
 
 class IsIntroduced(APIView):
@@ -292,5 +325,10 @@ class RelatedCount(APIView):
 
     def get(self, request):
         all_count = User.objects.all().count()
-        introduced_count = UserRelationship.objects.filter(Q(user1=request.user) & Q(introduced=True)).count()
-        return Response({"all_count": all_count, "introduced_count": introduced_count}, status=status.HTTP_200_OK)
+        introduced_count = UserRelationship.objects.filter(
+            Q(user1=request.user) & Q(introduced=True)
+        ).count()
+        return Response(
+            {"all_count": all_count, "introduced_count": introduced_count},
+            status=status.HTTP_200_OK,
+        )
