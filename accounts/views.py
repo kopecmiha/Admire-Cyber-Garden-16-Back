@@ -283,3 +283,12 @@ class TextSearch(APIView):
         search_results = User.objects.filter(reduce(or_, filter_fields))[start:last]
         result = UserSerializer(instance=search_results, many=True)
         return Response(result.data, status=status.HTTP_204_NO_CONTENT)
+
+
+class RelatedCount(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        all_count = User.objects.all().count()
+        introduced_count = UserRelationship.objects.filter(Q(user1=request.user) & Q(introduced=True)).count()
+        return Response({"all_count": all_count, "introduced_count": introduced_count}, status=status.HTTP_200_OK)
