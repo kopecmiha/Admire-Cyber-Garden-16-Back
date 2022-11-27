@@ -2,6 +2,7 @@ import json
 import random
 import re
 import uuid
+from _operator import and_
 from functools import reduce
 from operator import or_
 
@@ -309,13 +310,20 @@ class TextSearch(APIView):
         limit_of_set = int(params.get("limit_of_set", 10))
         start = page * limit_of_set
         last = start + limit_of_set
-        filter_fields = []
-        query_filter = Q(id__gte=0)
         if search_text:
+            word_filter = []
+            search_text = search_text.split(" ")
+        else:
+            search_text = []
+            word_filter = [Q(id__gte=0)]
+        for search_word in search_text:
+            filter_fields = []
             for item in allowed_fileds_to_filter + ["fact1"]:
-                filter_fields.append(Q(**{item + "__icontains": search_text}))
-                query_filter = reduce(or_, filter_fields)
-        search_results = User.objects.filter(query_filter)[start:last]
+                filter_fields.append(Q(**{item + "__icontains": search_word}))
+            query_filter = reduce(or_, filter_fields)
+            word_filter.append(query_filter)
+        word_filter = reduce(and_, word_filter)
+        search_results = User.objects.filter(word_filter)[start:last]
         result = UserSerializer(instance=search_results, many=True)
         return Response(result.data, status=status.HTTP_200_OK)
 
