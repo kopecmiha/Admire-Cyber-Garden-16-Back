@@ -38,6 +38,18 @@ class SpawnPlayCard(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         result_data = {"owner": requester, "person": person}
+        departments = Department.objects.all()
+        for department in departments:
+            playcard_set = set(
+                PlayCard.objects.filter(
+                    person__department_members=department, owner=requester
+                ).values_list("person_id", flat=True)
+            )
+            department_members = set(department.members.values_list("id", flat=True))
+            if playcard_set == department_members:
+                if department.id not in requester.collected_departments:
+                    requester.collected_departments.append(department.id)
+                    requester.save()
         response = PlayCardViewSerializer(instance=result_data)
         return Response(response.data, status=status.HTTP_201_CREATED)
 
