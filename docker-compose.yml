@@ -1,8 +1,49 @@
 version: '3.8'
 services:
+  nginx:
+    image: ghcr.io/kopecmiha/admire-cyber-garden-16-back/nginx:latest
+    restart: unless-stopped
+    volumes:
+      - static:/app/static
+      - media:/app/media
+    networks:
+      - app_network
+      - server
+    deploy:
+      replicas: 1
+      update_config:
+        failure_action: rollback
+        order: start-first
+      restart_policy:
+        condition: on-failure
+
+  hack_app:
+    image: ghcr.io/kopecmiha/admire-cyber-garden-16-back/application:latest
+    environment:
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
+    expose:
+      - 8000
+    networks:
+      - app_network
+      - server
+    volumes:
+      - static:/app/static
+      - media:/app/media
+    deploy:
+      replicas: 1
+      update_config:
+        failure_action: rollback
+        order: start-first
+      restart_policy:
+        condition: on-failure
+
   db:
     restart: unless-stopped
-    image: postgres:14.0-alpine
+    image: postgres:14-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     networks:
@@ -11,41 +52,10 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_PASSWORD}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-
-  hack_app:
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    environment:
-      DATABASE_NAME: ${DATABASE_NAME}
-      DATABASE_USER: ${DATABASE_USER}
-      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-      DATABASE_HOST: ${DATABASE_HOST}
-      DATABASE_PORT: ${DATABASE_PORT}
-    command: gunicorn main.wsgi:application --bind 0.0.0.0:8000
-    expose:
-      - 8000
-    depends_on:
-      - db
-    networks:
-      - app_network
-      - server
-    volumes:
-      - static:/app/static
-      - media:/app/media
-
-  nginx:
-    restart: unless-stopped
-    container_name: hack_container
-    build: .nginx
-    volumes:
-      - static:/app/static
-      - media:/app/media
-    depends_on:
-      - hack_app
-    networks:
-      - app_network
-      - server
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
 
 
 networks:

@@ -6,16 +6,67 @@ on:
       - master
 
 jobs:
-  ci:
-    runs-on: ${{ matrix.os }}
+  build-application:
+    runs-on: ubuntu-22.04
 
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/kopecmiha/admire-cyber-garden-16-back/application:latest
+
+  build-nginx:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .nginx
+          push: true
+          tags: ghcr.io/kopecmiha/admire-cyber-garden-16-back/nginx:latest
+
+  deploy:
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@master
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install SSH key
         run: |
@@ -23,8 +74,9 @@ jobs:
           ssh-keyscan -t rsa ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 400 ~/.ssh/id_rsa
+
       - name: Deploy 🚀
-        run: docker-compose up -d --build
+        run: docker stack deploy --prune --with-registry-auth -c docker-compose.yml admire-cyber-garden-16-back
         env:
           DOCKER_HOST: ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
           DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
