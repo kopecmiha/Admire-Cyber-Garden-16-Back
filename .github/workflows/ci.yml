@@ -57,6 +57,8 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
 
+    needs: [build-application, build-nginx]
+
     steps:
       - name: Checkout 🛎
         uses: actions/checkout@master
