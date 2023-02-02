@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   nginx:
     image: ghcr.io/kopecmiha/admire-cyber-garden-16-back/nginx:latest
@@ -7,7 +8,7 @@ services:
       - static:/app/static
       - media:/app/media
     networks:
-      - app_network
+      - app
       - server
     deploy:
       replicas: 1
@@ -28,8 +29,7 @@ services:
     expose:
       - 8000
     networks:
-      - app_network
-      - server
+      - app
     volumes:
       - static:/app/static
       - media:/app/media
@@ -47,7 +47,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     networks:
-      - app_network
+      - app
+      - bridge
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_USER: ${DATABASE_PASSWORD}
@@ -59,10 +60,10 @@ services:
 
 
 networks:
-  app_network:
-    driver: bridge
+  app:
   server:
-    external: true
+    external:
+      name: server
 
 volumes:
   postgres_data:
